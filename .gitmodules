@@ -1,0 +1,3 @@
+[submodule "minio/minio"]
+	path = minio/minio
+	url = https://github.com/peterpuhov-github/minio.git

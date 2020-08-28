@@ -1,0 +1,15 @@
+FROM golang:1.14-alpine as builder
+
+LABEL maintainer="MinIO Inc <dev@min.io>"
+
+#ENV GOPATH /go
+ENV GOPATH /build/go
+ENV CGO_ENABLED 0
+ENV GO111MODULE on
+
+RUN  \
+     apk add git
+
+ADD build.sh /build.sh
+RUN chmod +x /build.sh
+CMD ["/build.sh"]

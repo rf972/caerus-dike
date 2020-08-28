@@ -1,0 +1,10 @@
+#!/bin/bash
+
+docker run -p 9000:9000 \
+  -e "MINIO_ACCESS_KEY=admin" \
+  -e "MINIO_SECRET_KEY=admin123" \
+  --mount type=bind,source="$(pwd)"/data,target=/data \
+  --mount type=bind,source="$(pwd)"/build,target=/build \
+  minio_run_server server /data
+
+  
