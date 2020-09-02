@@ -1,6 +1,6 @@
 FROM golang:1.14-alpine as builder
 
-LABEL maintainer="MinIO Inc <dev@min.io>"
+LABEL maintainer="Peter Puhov <peterpuhov.github@gmail.com>"
 
 #ENV GOPATH /go
 ENV GOPATH /build/go
