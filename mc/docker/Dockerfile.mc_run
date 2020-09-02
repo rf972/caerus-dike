@@ -1,0 +1,13 @@
+FROM alpine:3.12
+
+LABEL maintainer="Peter Puhov <peterpuhov.github@gmail.com>"
+
+ENV GOPATH /build/go
+ENV CGO_ENABLED 0
+ENV GO111MODULE on
+
+RUN  \
+     apk add --no-cache ca-certificates 'curl>7.61.0' 'su-exec>=0.2' && \
+     echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
+
+ENTRYPOINT ["/build/docker-entrypoint.sh"]

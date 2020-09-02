@@ -1,0 +1,9 @@
+
+
+/build/go/bin/mc -C /build/config alias set minio http://172.17.0.3:9000 admin admin123
+
+/build/go/bin/mc -C /build/config alias ls minio
+
+./run_mc.sh config host add minio http://172.17.0.3:9000 admin admin123
+
+
