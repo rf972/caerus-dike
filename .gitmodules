@@ -1,3 +1,6 @@
 [submodule "minio/minio"]
 	path = minio/minio
 	url = https://github.com/peterpuhov-github/minio.git
+[submodule "spark"]
+	path = spark/spark
+	url = https://github.com/apache/spark.git
