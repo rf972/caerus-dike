@@ -9,6 +9,9 @@ docker run -p 9000:9000 \
   -e "MINIO_SECRET_KEY=admin123" \
   --mount type=bind,source="$(pwd)"/data,target=/data \
   --mount type=bind,source="$(pwd)"/build,target=/build \
+  --network dike-net \
+  --name minio_server \
+  --rm \
   minio_run_server server /data
 
   

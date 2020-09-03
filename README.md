@@ -4,6 +4,7 @@ setup
 ```bash
 git clone https://github.com/peterpuhov-github/dike.git
 git submodule update --recursive
+docker network create dike-net
 ```
 
 minio
@@ -37,7 +38,7 @@ cd ../
 # Make sure that minio server is running and use reported IP 172.X.X.X:9000
 # for browser access.
 # 
-./run_mc.sh config host add myminio http://172.17.0.3:9000 admin admin123
+./run_mc.sh config host add myminio http://minio_server:9000 admin admin123
 ./run_mc.sh mb myminio/spark-test
 ./run_mc.sh ls myminio
 ```
