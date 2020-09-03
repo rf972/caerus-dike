@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker kill spark_worker
-docker kill spark_master
+docker kill sparkworker
+docker kill sparkmaster
