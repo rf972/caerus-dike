@@ -8,3 +8,16 @@
 
 
 docker network create dike-net
+
+curl "https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2019_TotalPopulationBySex.csv" > TotalPopulation.csv
+
+mkdir -p buld/data
+curl "https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2019_TotalPopulationBySex.csv" > build/data/TotalPopulation.csv
+
+
+./run_mc.sh mb myminio/sql-test
+./run_mc.sh cp /build/data/TotalPopulation.csv myminio/sql-test/
+
+./run_mc.sh sql --csv-input "rd=\n,fh=USE,fd=," \
+    --query "SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM s3object AS s WHERE s.Location LIKE '%United States of America (and dependencies)%' AND s.Time='2020' " \
+    myminio/sql-test/TotalPopulation.csv

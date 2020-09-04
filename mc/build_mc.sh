@@ -5,6 +5,7 @@ if [ ! -d build ]; then
 fi
 
 cp docker/docker-entrypoint.sh ./build
+chmod a+x ./build/docker-entrypoint.sh
 
 docker run \
     --mount type=bind,source="$(pwd)"/mc,target=/mc \
