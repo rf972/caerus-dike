@@ -10,7 +10,7 @@ docker run -p 9000:9000 \
   --mount type=bind,source="$(pwd)"/data,target=/data \
   --mount type=bind,source="$(pwd)"/build,target=/build \
   --network dike-net \
-  --name minio_server \
+  --name minioserver \
   --rm \
   minio_run_server server /data
 
