@@ -42,8 +42,8 @@ cd ../
 ```
 
 
-Simple test of spark with minio
-=================================
+Tests of Spark with minio and spark-select
+==========================================
 ```
 cd minio
 ./run_server.sh
@@ -61,4 +61,6 @@ cp ../spark/examples/s3_data.csv ./build
 ./run_mc.sh ls myminio/spark-test
 
 docker exec -it sparkmaster spark-submit --conf "spark.jars.ivy=/build/ivy" --packages com.amazonaws:aws-java-sdk:1.11.853,org.apache.hadoop:hadoop-aws:3.2.0,io.minio:spark-select_2.11:2.1 /examples/s3.py minioserver
+
+docker exec -it sparkmaster spark-submit --conf "spark.jars.ivy=/build/ivy" --packages com.amazonaws:aws-java-sdk:1.11.853,org.apache.hadoop:hadoop-aws:3.2.0,org.apache.commons:commons-csv:1.8 --jars /spark-select/spark-select/target/scala-2.12/spark-select_2.12-2.1.jar /examples/s3-select.py minioserver
 ```

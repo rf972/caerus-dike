@@ -37,6 +37,12 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
+# sbt
+RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list \
+ && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 \
+ && apt-get update \
+ && apt-get install sbt
+
 # Setup Spark Environment
 ENV SPARK_VERSION 3.1.0
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-SNAPSHOT-bin-custom-spark
@@ -61,7 +67,8 @@ LABEL version="1.0"
 
 ADD build.sh /build.sh
 RUN chmod +x /build.sh
-CMD ["/build.sh"]
+ENTRYPOINT ["/build.sh"]
+CMD ["spark"]
 
 ####
 #### Spark run docker stage.
