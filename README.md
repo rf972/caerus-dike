@@ -36,9 +36,6 @@ cd dike/mc/docker
 cd ../
 ./build_mc.sh
 
-# Make sure that minio server is running and use reported IP 172.X.X.X:9000
-# for browser access.
-# 
 ./run_mc.sh config host add myminio http://minioserver:9000 admin admin123
 ./run_mc.sh mb myminio/spark-test
 ./run_mc.sh ls myminio
