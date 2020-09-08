@@ -7,3 +7,6 @@
 [submodule "mc/mc"]
 	path = mc/mc
 	url = https://github.com/peterpuhov-github/mc.git
+[submodule "spark-select"]
+	path = spark-select/spark-select
+	url = https://github.com/rf972/spark-select.git
