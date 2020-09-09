@@ -21,3 +21,13 @@ curl "https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV
 ./run_mc.sh sql --csv-input "rd=\n,fh=USE,fd=," \
     --query "SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM s3object AS s WHERE s.Location LIKE '%United States of America (and dependencies)%' AND s.Time='2020' " \
     myminio/sql-test/TotalPopulation.csv
+
+
+ls /build/go/pkg/mod/cache/download/github.com/minio/minio-go/v7/@v/
+
+./run_mc.sh custom \
+    --query "SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM s3object AS s WHERE s.Location LIKE '%United States of America (and dependencies)%' AND s.Time='2020' " \
+    myminio/sql-test/TotalPopulation.csv
+
+
+./run_mc.sh admin trace -v -a myminio
