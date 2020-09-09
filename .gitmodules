@@ -7,3 +7,6 @@
 [submodule "mc/mc"]
 	path = mc/mc
 	url = https://github.com/peterpuhov-github/mc.git
+[submodule "mc/minio-go"]
+	path = mc/minio-go
+	url = https://github.com/peterpuhov-github/minio-go.git
