@@ -13,6 +13,7 @@ if [ ! -f $ROOT/build/data/TotalPopulation.csv ]; then
     curl "https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2019_TotalPopulationBySex.csv" > $ROOT/build/data/TotalPopulation.csv
 fi
 
+$ROOT/run_mc.sh config host add myminio http://minioserver:9000 admin admin123
 $ROOT/run_mc.sh mb myminio/sql-test
 $ROOT/run_mc.sh cp /build/data/TotalPopulation.csv myminio/sql-test/
 
