@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker run --rm -p 4040:4040 -p 6066:6066 -p 7077:7077 -p 8080:8080 \
+docker run --rm -p 4040:4040 -p 6066:6066 -p 7077:7077 -p 8080:8080 -p 5005:5005 \
   --expose 7001 --expose 7002 --expose 7003 --expose 7004 --expose 7005 --expose 7077 --expose 6066 \
   --name sparkmaster \
   --network dike-net \

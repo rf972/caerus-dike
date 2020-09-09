@@ -28,8 +28,10 @@ def main(s3_ip_addr):
 
         # filtered schema
         st = StructType([
+            StructField("id", IntegerType(), False),
             StructField("name", StringType(), True),
             StructField("age", IntegerType(), False),
+            StructField("city", StringType(), True),
         ])
 
         df = spark \
@@ -43,6 +45,12 @@ def main(s3_ip_addr):
 
         # show only filtered rows.
         df.select("*").filter("age > 40").show()
+        #df.select(df['name'],df['age'],df['id']).filter(df.name.like("jim")).filter("age > 40").show()
+        df.select(df['name'],df['age'],df['id']).filter(df.name.like('Jim%')).filter("age > 40").show()
+        df.select(df['name'],df['age'],df['id']).filter(df.city.like('Miami%')).filter(df.name.like('Jim%')).filter("age > 40").show()
+        df.select(df['name'],df['age'],df['id']).filter("age < 90").filter("age > 40").show()
+        df.select(df['name'],df['age'],df['id']).filter("id < 5").filter("age > 40").show()
+    
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
