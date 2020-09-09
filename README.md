@@ -41,4 +41,8 @@ cd ../
 ./run_mc.sh config host add myminio http://minio_server:9000 admin admin123
 ./run_mc.sh mb myminio/spark-test
 ./run_mc.sh ls myminio
+
+# Http requests can be traced in separate terminal with:
+./run_mc_trace.sh admin trace -v -a myminio
+
 ```

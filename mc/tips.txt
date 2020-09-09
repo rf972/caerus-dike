@@ -30,4 +30,4 @@ ls /build/go/pkg/mod/cache/download/github.com/minio/minio-go/v7/@v/
     myminio/sql-test/TotalPopulation.csv
 
 
-./run_mc.sh admin trace -v -a myminio
+./run_mc_trace.sh admin trace -v -a myminio
