@@ -3,6 +3,7 @@ setup
 
 ```bash
 git clone https://github.com/peterpuhov-github/dike.git
+git submodule init
 git submodule update --recursive
 docker network create dike-net
 ```
@@ -35,14 +36,35 @@ cd dike/mc/docker
 cd ../
 ./build_mc.sh
 
-# Make sure that minio server is running and use reported IP 172.X.X.X:9000
-# for browser access.
-# 
-./run_mc.sh config host add myminio http://minio_server:9000 admin admin123
+./run_mc.sh config host add myminio http://minioserver:9000 admin admin123
 ./run_mc.sh mb myminio/spark-test
 ./run_mc.sh ls myminio
 
 # Http requests can be traced in separate terminal with:
 ./run_mc_trace.sh admin trace -v -a myminio
 
+```
+
+
+Tests of Spark with minio and spark-select
+==========================================
+```
+cd minio
+./run_server.sh
+```
+In another window:
+```
+cd spark
+./start_spark.sh
+
+cd ../mc
+./run_mc.sh config host add myminio http://minioserver:9000 admin admin123
+./run_mc.sh mb myminio/spark-test
+cp ../spark/examples/s3_data.csv ./build
+./run_mc.sh cp build/s3_data.csv myminio/spark-test/s3_data.csv
+./run_mc.sh ls myminio/spark-test
+
+docker exec -it sparkmaster spark-submit --conf "spark.jars.ivy=/build/ivy" --packages com.amazonaws:aws-java-sdk:1.11.853,org.apache.hadoop:hadoop-aws:3.2.0,io.minio:spark-select_2.11:2.1 /examples/s3.py minioserver
+
+docker exec -it sparkmaster spark-submit --conf "spark.jars.ivy=/build/ivy" --packages com.amazonaws:aws-java-sdk:1.11.853,org.apache.hadoop:hadoop-aws:3.2.0,org.apache.commons:commons-csv:1.8 --jars /spark-select/spark-select/target/scala-2.12/spark-select_2.12-2.1.jar /examples/s3-select.py minioserver
 ```

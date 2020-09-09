@@ -10,3 +10,6 @@
 [submodule "mc/minio-go"]
 	path = mc/minio-go
 	url = https://github.com/peterpuhov-github/minio-go.git
+[submodule "spark-select"]
+	path = spark-select/spark-select
+	url = https://github.com/rf972/spark-select.git
