@@ -9,6 +9,4 @@ ENV GO111MODULE on
 RUN  \
      apk add git
 
-ADD build.sh /build.sh
-RUN chmod +x /build.sh
-CMD ["/build.sh"]
+ENTRYPOINT ["/build/build-mc-entrypoint.sh"]

@@ -5,12 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Minio CLI",
+            "type": "go",
+            //"request": "launch",
+            "request": "attach",
+            "mode": "remote",
+            "remotePath": "/build/go/src",
+            //"program": "${workspaceFolder}/mc/mc",
+            "port": 40000,
+            "host": "172.18.0.3",        
+            "showLog": true   
+       },
+
+        {
             "name": "Minio Server",
             "type": "go",
             "request": "attach",
             "mode": "remote",
-            "remotePath": "/minio",
-            //"program": "${workspaceRoot}/minio/minio",
+            "remotePath": "/minio",            
             "port": 40000,
             "host": "172.18.0.2",        
             "showLog": true        
