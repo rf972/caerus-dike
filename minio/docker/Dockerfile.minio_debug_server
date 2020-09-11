@@ -27,5 +27,4 @@ ENTRYPOINT ["/build/debug-server-entrypoint.sh"]
 
 VOLUME ["/data"]
 
-CMD [ "dlv", "debug", "github.com/minio/minio", "--listen=:40000", "--headless=true", "--api-version=2", "--log", "--", "server", "/data" ]
 

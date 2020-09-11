@@ -4,6 +4,9 @@ if [ ! -d data ]; then
   mkdir data
 fi
 
+cp docker/*-entrypoint.sh ./build
+chmod a+x ./build/*-entrypoint.sh
+
 docker run -p 9000:9000 \
   -e "MINIO_ACCESS_KEY=admin" \
   -e "MINIO_SECRET_KEY=admin123" \
