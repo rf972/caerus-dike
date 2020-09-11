@@ -36,3 +36,10 @@ docker run -p 9000:9000 \
   --mount type=bind,source="$(pwd)"/data,target=/data \
   --mount type=bind,source="$(pwd)"/build,target=/build \
   minio_run.v0 server /data
+
+
+  /build/go/bin/minio server /data
+go install -x -v -v -ldflags "$(go run /minio/buildscripts/gen-ldflags.go)"
+dlv debug github.com/minio/minio --listen=:40000 --headless=true --api-version=2 --log -- server /data
+
+git push origin HEAD:master

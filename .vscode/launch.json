@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Minio Server",
+            "type": "go",
+            "request": "attach",
+            "mode": "remote",
+            "remotePath": "/minio",
+            //"program": "${workspaceRoot}/minio/minio",
+            "port": 40000,
+            "host": "172.18.0.2",        
+            "showLog": true        
+        }
+    ]
+}

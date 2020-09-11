@@ -31,3 +31,6 @@ ls /build/go/pkg/mod/cache/download/github.com/minio/minio-go/v7/@v/
 
 
 ./run_mc_trace.sh admin trace -v -a myminio
+
+git push origin HEAD:master
+

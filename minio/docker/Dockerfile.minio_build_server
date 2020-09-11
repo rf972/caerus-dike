@@ -2,7 +2,6 @@ FROM golang:1.14-alpine as builder
 
 LABEL maintainer="Peter Puhov <peterpuhov.github@gmail.com>"
 
-#ENV GOPATH /go
 ENV GOPATH /build/go
 ENV CGO_ENABLED 0
 ENV GO111MODULE on
