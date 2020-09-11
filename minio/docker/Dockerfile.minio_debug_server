@@ -1,5 +1,12 @@
 FROM golang:1.14-alpine
 
+RUN apk add ca-certificates \
+        dpkg \
+        gcc \
+        git \
+        musl-dev \
+    && go get github.com/go-delve/delve/cmd/dlv 
+
 ENV GOPATH /build/go
 ENV CGO_ENABLED 0
 ENV GO111MODULE on
@@ -15,13 +22,6 @@ EXPOSE 9000 40000
 RUN  \
      apk add --no-cache ca-certificates 'curl>7.61.0' 'su-exec>=0.2' && \
      echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
-
-RUN apk add --no-cache ca-certificates \
-        dpkg \
-        gcc \
-        git \
-        musl-dev \
-    && go get github.com/go-delve/delve/cmd/dlv   
 
 ENTRYPOINT ["/build/debug-server-entrypoint.sh"]
 
