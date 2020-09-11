@@ -5,6 +5,8 @@ setup
 git clone https://github.com/peterpuhov-github/dike.git
 git submodule init
 git submodule update --recursive
+# Alternatively you can update specific submodules only
+# git submodule update mc/mc mc/minio-go minio/minio
 docker network create dike-net
 ```
 
