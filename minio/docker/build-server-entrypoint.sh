@@ -93,4 +93,4 @@ cd /build/go/src/minio/minio
 
 echo `pwd`
 
-go install -x -v -v -ldflags "$(go run /minio/buildscripts/gen-ldflags.go)"
+go install -v -ldflags "$(go run /minio/buildscripts/gen-ldflags.go)"
