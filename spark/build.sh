@@ -12,6 +12,7 @@ cd ..
 docker run --rm -it --name spark_build \
     --mount type=bind,source="$(pwd)"/spark,target=/spark \
     --mount type=bind,source="$(pwd)"/build,target=/build \
-    spark_build
+    --mount type=bind,source="$(pwd)"/examples,target=/examples \
+    spark_build $@
 
     

@@ -13,6 +13,7 @@ def main(s3_ip_addr):
     #Intialize a spark context
     with pyspark.SparkContext("local", "PySparkWordCount") as sc:
 
+        #sc.setLogLevel('TRACE')
         sc.setLogLevel('WARN')
         hadoopConf = sc._jsc.hadoopConfiguration()
         hadoopConf.set("fs.s3a.access.key", "admin")
@@ -46,10 +47,12 @@ def main(s3_ip_addr):
         # show only filtered rows.
         df.select("*").filter("age > 40").show()
         #df.select(df['name'],df['age'],df['id']).filter(df.name.like("jim")).filter("age > 40").show()
-        df.select(df['name'],df['age'],df['id']).filter(df.name.like('Jim%')).filter("age > 40").show()
-        df.select(df['name'],df['age'],df['id']).filter(df.city.like('Miami%')).filter(df.name.like('Jim%')).filter("age > 40").show()
+        #df.select(df['name'],df['age'],df['id']).filter(df.name.like('Jim%')).filter("age > 40").show()
+        #df.select(df['name'],df['age'],df['id']).filter(df.city.like('Miami%')).filter(df.name.like('Jim%')).filter("age > 40").show()
         df.select(df['name'],df['age'],df['id']).filter("age < 90").filter("age > 40").show()
         df.select(df['name'],df['age'],df['id']).filter("id < 5").filter("age > 40").show()
+        c = df.select(df['name'],df['age'],df['id']).filter("id < 5").filter("age > 40").count()
+        print("count is {}".format(c))
     
 
 if __name__ == "__main__":
