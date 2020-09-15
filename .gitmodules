@@ -13,3 +13,6 @@
 [submodule "spark-select"]
 	path = spark-select/spark-select
 	url = https://github.com/rf972/spark-select.git
+[submodule "minio/ndp/sqlite"]
+	path = minio/ndp/sqlite
+	url = https://github.com/peterpuhov-github/sqlite.git
