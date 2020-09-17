@@ -16,3 +16,6 @@
 [submodule "minio/ndp/sqlite"]
 	path = minio/ndp/sqlite
 	url = https://github.com/peterpuhov-github/sqlite.git
+[submodule "minio/ndp/httpparser"]
+	path = minio/ndp/httpparser
+	url = https://github.com/peterpuhov-github/httpparser.git
