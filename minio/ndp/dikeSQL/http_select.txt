@@ -1,0 +1,10 @@
+POST /sql-test/TotalPopulation.csv?custom=&custom-type=1 HTTP/1.1
+Host: minioserver:9000
+Authorization: AWS4-HMAC-SHA256 Credential=admin/20200917/us-east-1/s3/aws4_request, SignedHeaders=content-md5;host;x-amz-content-sha256;x-amz-date, Signature=d1a2965d41921ce6f57418414bc28e3642d108b0eb7e4940a8d56421b4e70d51
+Content-Length: 685
+Content-Md5: c7gSxBGNaKJwr+fPPuqTvw==
+User-Agent: MinIO (linux; amd64) minio-go/v7.0.6 mc/DEVELOPMENT.GOGET
+X-Amz-Content-Sha256: e046c0e63ea1a03e49db7cba23d84be4c5e361f6a61d1195161ea1bed52d9f30
+X-Amz-Date: 20200917T160412Z
+
+<SelectObjectContentRequest><Expression>SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM s3object AS s WHERE s.Location LIKE &#39;%United States of America (and dependencies)%&#39; AND s.Time=&#39;2020&#39; </Expression><ExpressionType>CUSTOM</ExpressionType><InputSerialization><CompressionType>NONE</CompressionType><CSV><FileHeaderInfo>USE</FileHeaderInfo><RecordDelimiter>&#xA;</RecordDelimiter><FieldDelimiter>,</FieldDelimiter></CSV></InputSerialization><OutputSerialization><CSV><RecordDelimiter>&#xA;</RecordDelimiter><FieldDelimiter>,</FieldDelimiter></CSV></OutputSerialization><RequestProgress><Enabled>false</Enabled></RequestProgress></SelectObjectContentRequest>

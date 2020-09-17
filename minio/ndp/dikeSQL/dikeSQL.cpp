@@ -25,7 +25,7 @@ int main (int argc, char *argv[])
     std::string pipeInput;
     
     // while (getline(std::cin, pipeInput)) { std::cout << pipeInput << std::endl; }
-    std::ifstream t("http_data.txt");
+    std::ifstream t("http_select.txt");
     pipeInput = std::string((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
     
     pipeInput = std::regex_replace(pipeInput, std::regex("(?:\\r\\n|\\n|\\r)"), "\r\n");
@@ -35,20 +35,23 @@ int main (int argc, char *argv[])
     httpparser::HttpRequestParser parser;
     httpparser::HttpRequestParser::ParseResult res = parser.parse(request, pipeInput.c_str(), pipeInput.c_str() + pipeInput.length());
     if( res == httpparser::HttpRequestParser::ParsingCompleted ) {
-        std::cout << request.inspect() << std::endl;        
+        //std::cout << request.inspect() << std::endl;
+        std::cout << request.uri << std::endl;
     } else {
         std::cerr << "Parsing failed" << std::endl;
         return 1;
     }
 
+    std::string sqlPath = ".";
+    if(argc > 1){
+        sqlPath = std::string(argv[1]);
+    }
+
+    std::string sqlFileName =  sqlPath + request.uri.substr(0, request.uri.find("?"));
 
 	rapidxml::xml_document<> doc;
 	rapidxml::xml_node<> * root_node;
-	// Read the xml file into a vector
-	//ifstream theFile ("beerJournal.xml");
-	//vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
     request.content.push_back('\0');
-	//buffer.push_back('\0');
 	// Parse the buffer using the xml file parsing library into doc 
 	doc.parse<0>(&request.content[0]);
 	// Find our root node
@@ -58,19 +61,14 @@ int main (int argc, char *argv[])
     rapidxml::xml_node<> * expression_node = root_node->first_node("Expression");
     std::cout << expression_node->value() << std::endl;
 
-    return 0;
+    std::string sqlQuery = expression_node->value();    
+
     /*
-    std::string query = ("SELECT Location, PopTotal, PopDensity, Time  FROM temp.t1 "
-                    "WHERE Location LIKE '%United States of America (and dependencies)%' AND Time='2020' ;"
-                    ); 
-    */
     std::string query = ("SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM temp.t1 AS s "
                     "WHERE s.Location LIKE '%United States of America (and dependencies)%' AND s.Time='2020' ;"
                     ); 
-
-   //std::string query = ("SELECT * FROM temp.t1 LIMIT 5;");
-
-//"SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM s3object AS s WHERE s.Location LIKE '%United States of America (and dependencies)%' AND s.Time='2020' "
+    */
+    //"SELECT s.Location, s.PopTotal, s.PopDensity, s.Time  FROM s3object AS s WHERE s.Location LIKE '%United States of America (and dependencies)%' AND s.Time='2020' "
 
     std::cout << "Welcome to " << argv[0] << std::endl;
 
@@ -90,17 +88,25 @@ int main (int argc, char *argv[])
         sqlite3_free(errmsg); 
     }
 
-    rc = sqlite3_exec(db, "CREATE VIRTUAL TABLE temp.t1 USING csv(filename='TotalPopulation.csv', header=true);", NULL, NULL, &errmsg);
+    std::string sqlCreateVirtualTable = "CREATE VIRTUAL TABLE s3object USING csv(filename='";
+    sqlCreateVirtualTable += sqlFileName;
+    sqlCreateVirtualTable += "', header=true);" ;
+
+    //rc = sqlite3_exec(db, "CREATE VIRTUAL TABLE temp.t1 USING csv(filename='TotalPopulation.csv', header=true);", NULL, NULL, &errmsg);
+    //rc = sqlite3_exec(db, "CREATE VIRTUAL TABLE s3object USING csv(filename='TotalPopulation.csv', header=true);", NULL, NULL, &errmsg);
+    rc = sqlite3_exec(db, sqlCreateVirtualTable.c_str(), NULL, NULL, &errmsg);
     if(rc != SQLITE_OK) {
         std::cerr << "Can't create virtual table: " << errmsg << std::endl;
         sqlite3_free(errmsg); 
     }
 
-    rc = sqlite3_exec(db, query.c_str(), db_callback, NULL, &errmsg);
+    rc = sqlite3_exec(db, sqlQuery.c_str(), db_callback, NULL, &errmsg);
     if(rc != SQLITE_OK) {
         std::cerr << "Can't execute query: " << errmsg << std::endl;
         sqlite3_free(errmsg); 
     }
+
+    // DROP TABLE [IF EXISTS] [schema_name.]table_name;
 
     sqlite3_close(db);
     return(0);
