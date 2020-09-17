@@ -1,14 +1,46 @@
 
 #include <iostream>
-#include <sqlite3.h> 
+#include <string>
+#include <fstream>
+#include <streambuf>
+#include <regex>
 
-static int callback(void* data, int argc, char** argv, char** azColName);
+#include <sqlite3.h>
+
+#include <httpparser/request.h>
+#include <httpparser/httprequestparser.h>
+
+
+static int db_callback(void* data, int argc, char** argv, char** azColName);
+
 
 int main (int argc, char *argv[]) 
 {
     sqlite3 *db;    
     int rc;
     char  * errmsg;
+
+    std::string pipeInput;
+    
+    // while (getline(std::cin, pipeInput)) { std::cout << pipeInput << std::endl; }
+    std::ifstream t("http_data.txt");
+    pipeInput = std::string((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+    
+    pipeInput = std::regex_replace(pipeInput, std::regex("(?:\\r\\n|\\n|\\r)"), "\r\n");
+
+    
+    httpparser::Request request;    
+    httpparser::HttpRequestParser parser;
+    httpparser::HttpRequestParser::ParseResult res = parser.parse(request, pipeInput.c_str(), pipeInput.c_str() + pipeInput.length());
+    if( res == httpparser::HttpRequestParser::ParsingCompleted ) {
+        std::cout << request.inspect() << std::endl;
+        return 0;
+    } else {
+        std::cerr << "Parsing failed" << std::endl;
+        return 1;
+    }
+    
+    return 0;
     /*
     std::string query = ("SELECT Location, PopTotal, PopDensity, Time  FROM temp.t1 "
                     "WHERE Location LIKE '%United States of America (and dependencies)%' AND Time='2020' ;"
@@ -46,7 +78,7 @@ int main (int argc, char *argv[])
         sqlite3_free(errmsg); 
     }
 
-    rc = sqlite3_exec(db, query.c_str(), callback, NULL, &errmsg);
+    rc = sqlite3_exec(db, query.c_str(), db_callback, NULL, &errmsg);
     if(rc != SQLITE_OK) {
         std::cerr << "Can't execute query: " << errmsg << std::endl;
         sqlite3_free(errmsg); 
@@ -56,15 +88,24 @@ int main (int argc, char *argv[])
     return(0);
 }
 
-static int callback(void* data, int argc, char** argv, char** azColName) 
+static int db_callback(void* data, int argc, char** argv, char** azColName) 
 { 
     int i; 
-    fprintf(stderr, "%s: ", (const char*)data); 
+    //fprintf(stderr, "%s: ", (const char*)data); 
   
     for (i = 0; i < argc; i++) { 
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL"); 
+        //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+        std::cout << (argv[i] ? argv[i] : "NULL") << " ";
     } 
   
-    printf("\n"); 
+    std::cout << std::endl;
+    //printf("\n"); 
     return 0; 
 } 
+
+/*
+static int request_callback(http_parser* parser, const char *at, size_t length) 
+{
+  return 0;
+}
+*/
