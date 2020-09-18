@@ -15,6 +15,7 @@ docker run -p 9000:9000 \
   --network dike-net \
   --name minioserver \
   --rm \
-  minio_run_server server /data
+  -it \
+  minio_run_server minio server /data
 
   

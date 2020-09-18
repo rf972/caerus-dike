@@ -92,7 +92,8 @@ cd /build/go/src/minio/minio
 #go install -x -v -ldflags "$(go run /mc/buildscripts/gen-ldflags.go)"
 
 echo `pwd`
-echo 'dlv debug github.com/minio/minio --listen=:40000 --headless=true --api-version=2 --log --  "$@"'
+echo "dlv debug github.com/minio/minio --listen=:40000 --headless=true --api-version=2 --log --  $@"
 #exec  "$@"
 
-dlv debug github.com/minio/minio --listen=:40000 --headless=true --api-version=2 --log -- "$@"
+# dlv debug github.com/minio/minio --listen=:40000 --headless=true --api-version=2 --log -- "$@"
+/bin/bash

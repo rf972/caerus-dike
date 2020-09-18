@@ -17,13 +17,6 @@
 
 export PATH=$PATH:/build/go/bin
 
-# If command starts with an option, prepend minio.
-if [ "${1}" != "minio" ]; then
-    if [ -n "${1}" ]; then
-        set -- minio "$@"
-    fi
-fi
-
 ## Look for docker secrets in default documented location.
 docker_secrets_env() {
     ACCESS_KEY_FILE="/run/secrets/$MINIO_ACCESS_KEY_FILE"
