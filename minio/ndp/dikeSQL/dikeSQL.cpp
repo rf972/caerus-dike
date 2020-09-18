@@ -122,7 +122,10 @@ static int db_callback(void* data, int argc, char** argv, char** azColName)
   
     for (i = 0; i < argc; i++) { 
         //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-        std::cout << (argv[i] ? argv[i] : "NULL") << " ";
+        std::cout << (argv[i] ? argv[i] : "NULL");
+        if(i < argc -1) {
+            std::cout << ",";
+        }
     } 
   
     std::cout << std::endl;

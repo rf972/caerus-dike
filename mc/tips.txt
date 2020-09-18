@@ -14,6 +14,8 @@ curl "https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV
 mkdir -p buld/data
 curl "https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2019_TotalPopulationBySex.csv" > build/data/TotalPopulation.csv
 
+curl "http://eforexcel.com/wp/wp-content/uploads/2020/09/5m-Sales-Records.zip"  > build/data/5m-Sales-Records.zip
+
 
 ./run_mc.sh mb myminio/sql-test
 ./run_mc.sh cp /build/data/TotalPopulation.csv myminio/sql-test/
@@ -34,3 +36,4 @@ ls /build/go/pkg/mod/cache/download/github.com/minio/minio-go/v7/@v/
 
 git push origin HEAD:master
 
+Unable to run sql Cannot nest aggregations

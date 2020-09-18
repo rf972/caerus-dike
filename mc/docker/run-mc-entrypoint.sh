@@ -8,6 +8,7 @@ if [ "${1}" != "minio" ];
 then
     "$@"
 else
+    shift
     /build/go/bin/mc -C /build/config "$@"
 fi
 
