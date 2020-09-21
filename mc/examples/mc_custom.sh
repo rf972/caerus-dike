@@ -23,6 +23,7 @@ $ROOT/run_mc.sh minio custom \
 #    --query "SELECT s.Country, s.'Item Type', s.'Unit Price', s.'Total Profit', MAX(cast(s.'Total Profit' as int)) FROM s3object AS s ;" \
 #    myminio/sql-test/5m-Sales-Records.csv
 
-#$ROOT/run_mc.sh custom  --query "MD5"  myminio/sql-test/TotalPopulation.csv
-#$ROOT/run_mc.sh custom  --query "SELECT COUNT(*) FROM s3object"  myminio/sql-test/TotalPopulation.csv
-#$ROOT/run_mc.sh custom  --query "SELECT COUNT1( s.Location) FROM s3object AS s"  myminio/sql-test/TotalPopulation.csv
+
+#$ROOT/run_mc.sh minio custom  --query "MD5"  myminio/sql-test/TotalPopulation.csv
+#$ROOT/run_mc.sh minio custom  --query "SELECT COUNT(*) FROM s3object"  myminio/sql-test/TotalPopulation.csv
+#$ROOT/run_mc.sh minio custom  --query "SELECT COUNT1( s.Location) FROM s3object AS s"  myminio/sql-test/TotalPopulation.csv

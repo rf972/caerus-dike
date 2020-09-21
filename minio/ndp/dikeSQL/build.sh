@@ -2,7 +2,7 @@
 
 #gcc -g -I../sqlite/build  -fPIC -shared ../sqlite/ext/misc/csv.c -o csv.so
 
-gcc -g -I../sqlite/build -fPIC -DSQLITE_CORE -DSQLITE_OMIT_LOAD_EXTENSION -c ../sqlite/ext/misc/csv.c -o csv.o
+gcc -g -O3 -I../sqlite/build -fPIC -DSQLITE_CORE -DSQLITE_OMIT_LOAD_EXTENSION -c ../sqlite/ext/misc/csv.c -o csv.o
 ar rcs libcsv.a csv.o
 
 if [ ! -d ../../build/ndp ]; then
@@ -10,7 +10,7 @@ if [ ! -d ../../build/ndp ]; then
 fi
 
 if [ ! -f ./sqlite3.o ]; then
-    gcc -g -O0 -I. -I../sqlite/build \
+    gcc -g -O3 -I. -I../sqlite/build \
         -DSQLITE_THREADSAFE=1 -DSQLITE_ENABLE_FTS4 \
         -DSQLITE_ENABLE_FTS5 -DSQLITE_ENABLE_JSON1 \
         -DSQLITE_ENABLE_RTREE -DSQLITE_ENABLE_EXPLAIN_COMMENTS \
