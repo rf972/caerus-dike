@@ -35,7 +35,8 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 RUN apt-get update \
  && apt install default-jdk scala git maven -y \
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && ln -s /usr/lib/jvm/java-11-openjdk-amd64/bin /usr/lib/jvm/bin
 
 # sbt
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list \
