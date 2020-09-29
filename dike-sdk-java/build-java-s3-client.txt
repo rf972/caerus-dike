@@ -1,0 +1,42 @@
+git clone https://github.com/aws/aws-sdk-java.git
+
+docker pull maven:3.6.3-jdk-8
+mkdir -p build/root/.m2
+
+# SDK v1.11 compilation
+docker run -it --rm  \
+-v "$(pwd)/aws-sdk-java":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn clean install -Dgpg.skip=true  -DskipTests
+
+# Create maven project named SelectObjectContent
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn -B archetype:generate \
+  -DarchetypeGroupId=org.apache.maven.archetypes \
+  -DgroupId=org.dike.s3 \
+  -DartifactId=SelectObjectContent
+
+# Docker runs as root so we need to set permittions
+sudo chmod -R a+rwx dike-test
+
+# Build our project
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/SelectObjectContent":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-11 mvn clean install
+
+# Run out client
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/SelectObjectContent":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/usr/src/mymaven/target/SelectObjectContent-uber.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-8 java  org.dike.s3.SelectObjectContent

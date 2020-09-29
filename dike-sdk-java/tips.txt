@@ -1,0 +1,174 @@
+https://hub.docker.com/_/maven
+https://hub.docker.com/r/softinstigate/maven-aws/
+
+
+git clone https://github.com/aws/aws-sdk-java-v2.git
+git clone https://github.com/aws/aws-sdk-java.git
+
+
+docker pull maven:3.6.3-jdk-11
+docker pull maven:3.6.3-jdk-8
+mkdir -p build/root/.m2
+
+
+# SDK v1.11 compilation
+docker run -it --rm  \
+-v "$(pwd)/aws-sdk-java":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn clean install -Dgpg.skip=true  -DskipTests
+
+docker run -it --rm  \
+-v "$(pwd)/aws-sdk-java":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn deploy:deploy-file -Dgpg.skip=true -Dfile=/root/.m2/repository/com/amazonaws/dike -DgroupId=com.amazonaws.dike
+
+
+# S3 V1.11 example compilation
+docker run -it --rm  \
+-v "$(pwd)/aws-doc-sdk-examples/java/example_code/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn -U clean install -DskipTests
+
+
+#/root/.m2/repository/aws/example/s3/s3examples/1.0/s3examples-1.0.jar
+# S3 V1.11 run example
+docker run -it --rm  \
+-v "$(pwd)/aws-doc-sdk-examples/java/example_code/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/root/.m2/repository/aws/example/s3/s3examples/1.0/s3examples-1.0.jar:\
+/root/.m2/repository/com/amazonaws/aws-java-sdk/1.11.869/aws-java-sdk-1.11.869.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-11 java aws.example.s3.ListBuckets
+
+#/root/.m2/repository/aws/example/s3/s3examples/1.0/s3examples-1.0.jar
+
+# dike v1.11 s3 example
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn -B archetype:generate \
+  -DarchetypeGroupId=org.apache.maven.archetypes \
+  -DgroupId=org.dike.s3select \
+  -DartifactId=s3select
+
+# Build project
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn -B archetype:generate \
+  -DarchetypeGroupId=org.apache.maven.archetypes \
+  -DgroupId=org.dike.s3 \
+  -DartifactId=ListBuckets
+
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/ListBuckets":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn clean install
+
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/s3listbuckets":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/root/.m2/repository/org/dike/s3/s3listbuckets/1.0-SNAPSHOT/s3listbuckets-1.0-SNAPSHOT.jar:\
+/root/.m2/repository/com/amazonaws/aws-java-sdk-s3/1.11.869/aws-java-sdk-s3-1.11.869.jar:\
+/root/.m2/repository/com/amazonaws/aws-java-sdk-core/1.11.869/aws-java-sdk-core-1.11.869.jar:\
+/root/.m2/repository/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-11 java  org.dike.s3.ListBuckets
+
+
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/s3listbuckets":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/usr/src/mymaven/target/ListBuckets-uber.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-11 java  org.dike.s3.ListBuckets
+
+
+
+# SDK v2 compilation
+docker run -it --rm  \
+-v "$(pwd)/aws-sdk-java-v2":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-11 mvn install -P quick -o -DskipTests
+
+# S3 V2 example compilation
+docker run -it --rm  \
+-v "$(pwd)/aws-doc-sdk-examples/javav2/example_code/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-11 mvn install -DskipTests
+
+docker run -it --rm  \
+-v "$(pwd)/aws-doc-sdk-examples/javav2/example_code/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/root/.m2/repository/com/example/s3/sdk-s3-examples/1.0/sdk-s3-examples-1.0.jar:/root/.m2/repository/software/amazon/awssdk/aws-sdk-java/2.14.24-SNAPSHOT/aws-sdk-java-2.14.24-SNAPSHOT.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-11 java com.example.s3.S3ObjectOperations
+
+
+docker run -it --rm  \
+-v "$(pwd)/aws-doc-sdk-examples/javav2/example_code/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/root/.m2/repository/com/example/s3/sdk-s3-examples/1.0/sdk-s3-examples-1.0.jar:/root/.m2/repository/software/amazon/awssdk/aws-sdk-java/2.14.24-SNAPSHOT/aws-sdk-java-2.14.24-SNAPSHOT.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-11 java com.example.s3.ListObjects sql-test
+
+
+
+build/root/.m2/repository/com/amazonaws/aws-java-sdk/1.11.869/aws-java-sdk-1.11.869.jar
+
+dike-sdk-java/aws-doc-sdk-examples/java/example_code/s3
+
+
+# Full example Select Object Content
+# Build project
+
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-8 mvn -B archetype:generate \
+  -DarchetypeGroupId=org.apache.maven.archetypes \
+  -DgroupId=org.dike.s3 \
+  -DartifactId=SelectObjectContent
+
+# Docker runs as root so we need to set permittions
+sudo chmod -R a+rwx dike-test
+
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/SelectObjectContent":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+maven:3.6.3-jdk-11 mvn clean install
+
+docker run -it --rm  \
+-v "$(pwd)/dike-test/s3/SelectObjectContent":/usr/src/mymaven \
+-w /usr/src/mymaven \
+-v "$(pwd)/build/root/.m2":/root/.m2 \
+--network dike-net \
+-e "CLASSPATH=/usr/src/mymaven/target/SelectObjectContent-uber.jar" \
+-e "AWS_ACCESS_KEY_ID=admin" \
+-e "AWS_SECRET_ACCESS_KEY=admin123" \
+maven:3.6.3-jdk-8 java  org.dike.s3.SelectObjectContent
