@@ -19,3 +19,6 @@
 [submodule "minio/ndp/httpparser"]
 	path = minio/ndp/httpparser
 	url = https://github.com/peterpuhov-github/httpparser.git
+[submodule "benchmark/tpch/tpch-spark"]
+	path = benchmark/tpch/tpch-spark
+	url = https://github.com/peterpuhov-github/tpch-spark.git
