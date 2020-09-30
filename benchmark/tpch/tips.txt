@@ -1,0 +1,5 @@
+git clone https://github.com/peterpuhov-github/tpch-spark.git
+
+cd tpch-spark/dbgen
+make
+./dbgen -s 1
