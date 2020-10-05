@@ -55,5 +55,10 @@ orders.csv records:
 lineitem.csv records:
 6001215
 
+# Run a single test (test 1) with the .tbl format
+./run_tpch.sh --start 1 --test tbl
+
+# Run a single test (test 1) with the .csv format (V2 data source)
+./run_tpch.sh --start 1 --test csv
 ```
 
