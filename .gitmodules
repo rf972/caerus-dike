@@ -3,7 +3,7 @@
 	url = https://github.com/peterpuhov-github/minio.git
 [submodule "spark"]
 	path = spark/spark
-	url = https://github.com/apache/spark.git
+	url = https://github.com/rf972/spark.git 
 [submodule "mc/mc"]
 	path = mc/mc
 	url = https://github.com/peterpuhov-github/mc.git

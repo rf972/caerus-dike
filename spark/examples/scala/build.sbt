@@ -1,4 +1,4 @@
-name := "Spark-select examples"
+name := "Spark examples"
  
 version := "1.0"
  
