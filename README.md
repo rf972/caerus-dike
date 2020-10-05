@@ -43,7 +43,7 @@ cd ../
 ./run_mc.sh ls myminio
 
 # Http requests can be traced in separate terminal with:
-./run_mc_trace.sh admin trace -v -a myminio
+./run_mc_trace.sh minio admin trace -v -a myminio
 
 ```
 

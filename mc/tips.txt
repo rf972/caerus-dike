@@ -37,3 +37,6 @@ ls /build/go/pkg/mod/cache/download/github.com/minio/minio-go/v7/@v/
 git push origin HEAD:master
 
 Unable to run sql Cannot nest aggregations
+
+./run_mc_test.sh /build/test/perf_test.sh
+
