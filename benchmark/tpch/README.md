@@ -5,6 +5,8 @@ setup
 # Assuming your current directory at a top level of dike project
 git submodule update mc/mc mc/minio-go minio/minio benchmark/tpch/tpch-spark
 
+# You may want to rebouild mc and minio_server :)
+
 cd benchmark/tpch/tpch-spark/dbgen
 make
 
