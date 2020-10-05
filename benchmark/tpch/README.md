@@ -18,14 +18,18 @@ cd minio
 ./run_server.sh
 
 # in separate terminal run spark
+# note that you should have previously run build_all.sh at the top level or
+# build.sh from /spark
 cd spark
 ./spark_start.sh
 
 # In the same window, hit <enter> and then
 # run these commands.  
-# This copies data down to ../../mc/build/data/
 
 cd benchmark/tpch/
+./build_tpch.sh
+
+# This copies data down to ../../mc/build/data/
 ./run_tpch_init.sh
 
 # In separate terminal run mc based tpch init and test
