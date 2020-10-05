@@ -13,14 +13,20 @@ make
 # Build tpch data tables (it can take a few minutes)
 ./dbgen -s 1
 
-# Convert to csv format
-cd ../../
-# You should be at benchmark/tpch directory
-./build_csv.sh tpch-spark/dbgen ../../mc/build/data/
-
 # In separate terminal run minio server
 cd minio
 ./run_server.sh
+
+# in separate terminal run spark
+cd spark
+./spark_start.sh
+
+# In the same window, hit <enter> and then
+# run these commands.  
+# This copies data down to ../../mc/build/data/
+
+cd benchmark/tpch/
+./run_tpch_init.sh
 
 # In separate terminal run mc based tpch init and test
 cd mc
