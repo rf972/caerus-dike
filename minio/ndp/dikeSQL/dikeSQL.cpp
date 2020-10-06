@@ -89,7 +89,7 @@ int main (int argc, char *argv[])
         sqlite3_free(errmsg); 
     }
 
-    std::string sqlCreateVirtualTable = "CREATE VIRTUAL TABLE s3object USING csv(filename='";
+    std::string sqlCreateVirtualTable = "CREATE VIRTUAL TABLE S3Object USING csv(filename='";
     sqlCreateVirtualTable += sqlFileName;
     sqlCreateVirtualTable += "', header=true);" ;
 
@@ -122,7 +122,17 @@ static int db_callback(void* data, int argc, char** argv, char** azColName)
   
     for (i = 0; i < argc; i++) { 
         //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-        std::cout << (argv[i] ? argv[i] : "NULL");
+        //std::cout << (argv[i] ? argv[i] : "NULL");
+        if(argv[i]){
+            if (std::string(argv[i]).find(',') != std::string::npos) {
+                // Comma found in data
+                std::cout << '"' << argv[i] << '"';
+            } else {
+                std::cout << argv[i];
+            }
+        } else {
+            std::cout << "NULL";
+        }
         if(i < argc -1) {
             std::cout << ",";
         }
@@ -132,10 +142,3 @@ static int db_callback(void* data, int argc, char** argv, char** azColName)
     //printf("\n"); 
     return 0; 
 } 
-
-/*
-static int request_callback(http_parser* parser, const char *at, size_t length) 
-{
-  return 0;
-}
-*/

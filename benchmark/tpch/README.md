@@ -21,7 +21,7 @@ cd minio
 # note that you should have previously run build_all.sh at the top level or
 # build.sh from /spark
 cd spark
-./spark_start.sh
+./start_spark.sh
 
 # In the same window, hit <enter> and then
 # run these commands.  
