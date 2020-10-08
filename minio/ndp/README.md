@@ -7,7 +7,7 @@ mkdir build
 cd build
 
 #  Run the configure script
-../sqlite/configure
+../configure
 
 #  Build the "amalgamation" source file
 make sqlite3.c
