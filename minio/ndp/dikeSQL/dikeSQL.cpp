@@ -71,6 +71,9 @@ int main (int argc, char *argv[])
 
     std::string sqlQuery = expression_node->value();    
 
+    sqlite3_soft_heap_limit64(1<<30);
+    sqlite3_hard_heap_limit64(2<<30);
+
     rc = sqlite3_open(":memory:", &db);
 
     if( rc ) {
