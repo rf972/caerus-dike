@@ -13,7 +13,7 @@ fi
 $ROOT/run_mc.sh minio config host add myminio http://minioserver:9000 admin admin123
 $ROOT/run_mc.sh minio mb myminio/tpch-test
 
-for f in nation region supplier customer part partsupp order lineitem
+for f in nation region supplier customer part partsupp orders lineitem
 do
     $ROOT/run_mc.sh minio cp /build/data/$f.csv myminio/tpch-test/
 done
