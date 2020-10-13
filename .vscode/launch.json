@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Java test (Attach)",
+            "request": "attach",
+            "hostName": "172.18.0.3",
+            "port": 8000
+        },
+
+        {
             "name": "Minio CLI",
             "type": "go",
             //"request": "launch",

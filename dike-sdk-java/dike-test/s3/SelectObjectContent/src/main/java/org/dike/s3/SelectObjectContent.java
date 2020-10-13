@@ -18,7 +18,7 @@ import com.amazonaws.services.s3.model.SelectObjectContentResult;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
-import static com.amazonaws.util.IOUtils.copy;
+
 
 class S3SelectThread extends Thread {
     public String BUCKET_NAME;
@@ -108,22 +108,14 @@ class S3SelectThread extends Thread {
     }    
 }
 
+
 public class SelectObjectContent {
-
-    //sql-test/TotalPopulation.csv
-    //tpch-test/lineitem.csv
-    //private static final String BUCKET_NAME = "sql-test";
     private static  String BUCKET_NAME = "tpch-test";
-
-    //private static final String CSV_OBJECT_KEY = "TotalPopulation.csv";
-    //private static final String CSV_OBJECT_KEY = "5m-Sales-Records.csv";
     private static  String CSV_OBJECT_KEY = "lineitem.csv";
-
-    //private static final String QUERY = "SELECT COUNT(*) FROM s3object";
-    //select s."l_orderkey",s."l_partkey",s."l_suppkey",s."l_linenumber",s."l_quantity",s."l_extendedprice",s."l_discount",s."l_tax",s."l_returnflag",s."l_linestatus",s."l_shipdate",s."l_commitdate",s."l_receiptdate",s."l_shipinstruct",s."l_shipmode",s."l_comment" from S3Object s' \
     private static String QUERY = "select s.l_orderkey,s.l_partkey,s.l_suppkey,s.l_linenumber,s.l_quantity,s.l_extendedprice,s.l_discount,s.l_tax,s.l_returnflag,s.l_linestatus,s.l_shipdate,s.l_commitdate,s.l_receiptdate,s.l_shipinstruct,s.l_shipmode,s.l_comment from S3Object s";
 
     public static void main(String[] args) {               
+        int threadCount = 1;
 
         if (args.length == 3) {
             BUCKET_NAME = args[0];
@@ -134,7 +126,7 @@ public class SelectObjectContent {
         }
         S3SelectThread s3selectThread[] = new S3SelectThread[4];
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < threadCount; i++) {
             s3selectThread[i] = new S3SelectThread();
             s3selectThread[i].BUCKET_NAME = BUCKET_NAME;
             s3selectThread[i].CSV_OBJECT_KEY = CSV_OBJECT_KEY;
@@ -143,17 +135,15 @@ public class SelectObjectContent {
             s3selectThread[i].start();
         }
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < threadCount; i++) {
             try {
                 s3selectThread[i].join();
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }            
         }
-
-        // To get the JVM Heap Size
+        
         long heapSize = Runtime.getRuntime().totalMemory();
-        // To print the JVM Heap Size
         System.out.println("Heap Size: " + (heapSize >> 20) + "MB");
     }
 }

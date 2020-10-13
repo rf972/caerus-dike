@@ -2,3 +2,11 @@
 # cpp-httplib
 https://github.com/yhirose/cpp-httplib.git
 
+
+
+r_regionkey,r_name,r_comment
+
+
+s_suppkey LongType, s_name StringType, s_address StringType, s_nationkey LongType, s_phone StringType, s_acctbal,DoubleType, s_comment StringType
+
+./dikeSQL 3 ./region.tbl "SELECT * FROM S3Object s"
