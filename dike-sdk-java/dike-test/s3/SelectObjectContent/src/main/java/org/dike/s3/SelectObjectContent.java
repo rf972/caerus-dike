@@ -115,7 +115,7 @@ public class SelectObjectContent {
     private static String QUERY = "select s.l_orderkey,s.l_partkey,s.l_suppkey,s.l_linenumber,s.l_quantity,s.l_extendedprice,s.l_discount,s.l_tax,s.l_returnflag,s.l_linestatus,s.l_shipdate,s.l_commitdate,s.l_receiptdate,s.l_shipinstruct,s.l_shipmode,s.l_comment from S3Object s";
 
     public static void main(String[] args) {               
-        int threadCount = 1;
+        int threadCount = 8;
 
         if (args.length == 3) {
             BUCKET_NAME = args[0];
@@ -124,12 +124,12 @@ public class SelectObjectContent {
         } else if (args.length > 0) {
             QUERY += " " + args[0];
         }
-        S3SelectThread s3selectThread[] = new S3SelectThread[4];
+        S3SelectThread s3selectThread[] = new S3SelectThread[threadCount];
 
         for(int i = 0; i < threadCount; i++) {
             s3selectThread[i] = new S3SelectThread();
             s3selectThread[i].BUCKET_NAME = BUCKET_NAME;
-            s3selectThread[i].CSV_OBJECT_KEY = CSV_OBJECT_KEY;
+            s3selectThread[i].CSV_OBJECT_KEY = CSV_OBJECT_KEY + "." + Integer.toString(i+1);;
             s3selectThread[i].QUERY = QUERY;
 
             s3selectThread[i].start();

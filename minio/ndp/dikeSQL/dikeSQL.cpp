@@ -114,8 +114,8 @@ int main (int argc, char *argv[])
     std::string sqlCreateVirtualTable;
 
     bool tbl_mode = false;
-    size_t extIndex = sqlFileName.find_last_of(".");
-    if (extIndex != std::string::npos && sqlFileName.substr(extIndex, sqlFileName.length()) == ".tbl") {
+    size_t extIndex = sqlFileName.find(".tbl");
+    if (extIndex != std::string::npos) {
         tbl_mode = true;
     }
 
@@ -126,20 +126,14 @@ int main (int argc, char *argv[])
     }
 
     if(tbl_mode){         
-        std::string schemaFileName;
-        if (extIndex == std::string::npos){
-            schemaFileName = sqlFileName + ".schema";
-        } else {
-            schemaFileName = sqlFileName.substr(0, extIndex) + ".schema";
-        }
+        std::string schemaFileName = sqlFileName.substr(0, extIndex) + ".schema";                   
 
         sqlCreateVirtualTable = "CREATE VIRTUAL TABLE S3Object USING tbl(filename='";
         sqlCreateVirtualTable += sqlFileName + "'";
         std::ifstream fs(schemaFileName);
         std::string schema((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
-
-        //sqlCreateVirtualTable += ", schema=CREATE TABLE S3Object (r_regionkey INTEGER,r_name TEXT,r_comment TEXT)";
-        if(!schema.empty()){
+        
+        if(!schema.empty()) {
             sqlCreateVirtualTable += ", schema=CREATE TABLE S3Object (" + schema + ")";
         }
     }

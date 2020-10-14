@@ -10,3 +10,10 @@ r_regionkey,r_name,r_comment
 s_suppkey LongType, s_name StringType, s_address StringType, s_nationkey LongType, s_phone StringType, s_acctbal,DoubleType, s_comment StringType
 
 ./dikeSQL 3 ./region.tbl "SELECT * FROM S3Object s"
+
+./dbgen -f -s 1 -S 1 -C 8 -v
+./dbgen -f -s 1 -S 2 -C 8 -v
+./dbgen -f -s 1 -S 3 -C 8 -v
+./dbgen -f -s 1 -S 4 -C 8 -v
+
+./dikeSQL 3 ../../data/tpch-test/lineitem.tbl.1 'SELECT s.l_orderkey,s.l_partkey,s.l_suppkey,s.l_linenumber,s.l_quantity,s.l_extendedprice,s.l_discount,s.l_tax,s.l_returnflag,s.l_linestatus,s.l_shipdate,s.l_commitdate,s.l_receiptdate,s.l_shipinstruct,s.l_shipmode,s.l_comment FROM (SELECT * FROM S3Object LIMIT 4 OFFSET 50) s'
