@@ -22,3 +22,6 @@
 [submodule "benchmark/tpch/tpch-spark"]
 	path = benchmark/tpch/tpch-spark
 	url = https://github.com/peterpuhov-github/tpch-spark.git
+[submodule "s3datasource/s3datasource"]
+	path = s3datasource/s3datasource
+	url = https://github.com/rf972/s3datasource.git
