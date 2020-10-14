@@ -28,8 +28,9 @@ object S3DatasourceExample {
       .config("spark.datasource.s3.secretKey", "admin123")
       .getOrCreate()
 
+    // .format("org.apache.spark.sql.execution.datasources.v2.s3")
     val df = sparkSession.read
-      .format("org.apache.spark.sql.execution.datasources.v2.s3")
+      .format("com.github.s3datasource")
       .schema(schema)
       .option("format", "csv")
       .load("s3a://spark-test/s3_data.csv")
