@@ -12,5 +12,6 @@ docker run --rm -p 4040:4040 -p 6066:6066 -p 7077:7077 -p 8080:8080 -p 5005:5005
   --mount type=bind,source="$(pwd)"/examples,target=/examples \
   --mount type=bind,source="$(pwd)"/../spark-select,target=/spark-select \
   --mount type=bind,source="$(pwd)"/../benchmark/tpch,target=/tpch \
+  --mount type=bind,source="$(pwd)"/../s3datasource/s3datasource,target=/s3datasource \
   -v "$(pwd)"/conf/master:/conf -v "$(pwd)"/data:/tmp/data \
   spark_run bin/spark-class org.apache.spark.deploy.master.Master -h sparkmaster
