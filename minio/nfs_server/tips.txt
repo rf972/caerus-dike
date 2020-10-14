@@ -1,0 +1,9 @@
+rpcinfo -p 172.18.0.2
+
+
+docker inspect nfsserver | grep "IPAddress"
+
+sudo mount -t nfs4 -o proto=tcp  172.18.0.2:/data $(pwd)/test
+
+sudo umount $(pwd)/test
+docker stop nfsserver
