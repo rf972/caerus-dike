@@ -9,7 +9,7 @@ if [ ! -d $DATA_DIR ]; then
   mkdir $DATA_DIR
 fi
 cp tpch-spark/dbgen/*.tbl ../../spark/build/tpch-data
-./run_tpch.sh --test init --partitions 1
+./run_tpch.sh --test init 
 STATUS=$?
 if [ $STATUS -eq 0 ];then
   echo "TPCH init Successful"
