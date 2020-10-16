@@ -11,18 +11,44 @@ echo "Built minio docker"
 echo "Built minio server"
 cd ../
 
-cd spark
-./build.sh
-cd ../
-echo "Built spark"
+cd minio/ndp/sqlite
+mkdir build || true
+cd build
+#  Run the configure script
+../configure
+#  Build the "amalgamation" source file
+make sqlite3.c
+echo "Built sqlite server"
 
-cd spark-select
+cd ../../dikeSQL
 ./build.sh
-cd ..
-echo "Built spark-select"
+echo "Built dikeSQL server"
+cd ../../../
 
 cd mc/docker
 ./build_dockers.sh
-cd ../
+cd ..
 ./build_mc.sh
 echo "Built mc"
+cd ..
+
+cd spark
+./build.sh
+echo "Built spark"
+cd ..
+
+cd s3datasource
+./build_s3.sh
+echo "Built s3datasource"
+cd ..
+
+cd benchmark/tpch
+./build_tpch.sh
+echo "Built s3datasource"
+cd ../../
+
+echo "Done building Dike all"
+#cd spark-select
+#./build.sh
+#cd ..
+#echo "Built spark-select"

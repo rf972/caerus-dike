@@ -1,5 +1,6 @@
 FROM ubuntu:20.04 as builder_base
 LABEL version="1.0"
+LABEL maintainer="Robert Foley <robfoley972@gmail.com>"
 
 RUN apt-get update \
  && apt-get install -y locales \
