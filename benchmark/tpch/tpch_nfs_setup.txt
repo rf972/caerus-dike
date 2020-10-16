@@ -1,0 +1,50 @@
+# This is a sequence of steps to follow to setup our nfs spark test.
+# First run 
+./build_all.sh
+
+# Start dike server
+cd minio
+./run_dike_server.sh
+
+# In another window start spark:
+cd spark
+./start_spark.sh
+
+# In the same window, hit <enter> and then
+# run these commands.  
+
+# Follow procedure to generate csv files
+cd benchmark/tpch/tpch-spark/dbgen
+make
+
+# Build tpch data tables (it can take a few minutes)
+./dbgen -s 1
+
+# This generates the csv files under /spark/build/tpch-data
+cd ../../
+./run_tpch_init.sh
+cd ../../
+cp mc/build/data/*.csv minio/data
+
+# Stop spark
+cd spark
+./stop_spark.sh
+
+# Start nfs docker
+# Make sure nfs kernel module is loaded
+sudo modprobe nfs
+
+# Start NFS Server 
+cd minio/nfs_server
+./run_nfs_server.sh
+
+# Find NFS Server address
+docker inspect nfsserver | grep "IPAddress"
+
+cd ../../
+cd spark
+sudo mount -t nfs4 -o proto=tcp  172.18.0.3:/data $(pwd)/tpch-data
+
+cd ../
+cd benchmark/tpch
+./run_tpch.sh --test csvFile -n 1 -p 1 2>&1 | tee log.txt

@@ -4,6 +4,11 @@ if [ ! -d build ]; then
   mkdir build
   mkdir conf | true
 fi
+
+if [ ! -d tpch-data ]; then
+  mkdir tpch-data
+fi
+
 if [ "$1" == "debug" ]; then
   echo "build with sbt --ivy /build/ivy"
   shift
