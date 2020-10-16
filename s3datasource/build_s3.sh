@@ -13,6 +13,6 @@ else
   echo "Building s3datasource"
   docker run --rm -it --name s3_build \
     --mount type=bind,source="$(pwd)"/../s3datasource,target=/s3datasource \
-    --entrypoint /s3datasource/build/build.sh -w /s3datasource/s3datasource \
+    --entrypoint /s3datasource/scripts/build.sh -w /s3datasource/s3datasource \
     spark_build
 fi
