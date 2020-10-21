@@ -18,13 +18,14 @@ cd benchmark/tpch/tpch-spark/dbgen
 make
 
 # Build tpch data tables (it can take a few minutes)
-./dbgen -s 1
+# -s 1 (1 GB)  -f means overwrite
+./dbgen -s 1 -f
 
 # This generates the csv files under /spark/build/tpch-data
 cd ../../
 ./run_tpch_init.sh
 cd ../../
-cp mc/build/data/*.csv minio/data
+mv mc/build/data/*.csv minio/data
 
 # Stop spark
 cd spark
@@ -43,8 +44,12 @@ docker inspect nfsserver | grep "IPAddress"
 
 cd ../../
 cd spark
-sudo mount -t nfs4 -o proto=tcp  172.18.0.3:/data $(pwd)/tpch-data
+sudo mount -t nfs4 -o proto=tcp  172.18.0.3:/data/tpch-test $(pwd)/tpch-data
+
+./start_spark.sh
 
 cd ../
 cd benchmark/tpch
-./run_tpch.sh --test csvFile -n 1 -p 1 2>&1 | tee log.txt
+./run_tpch.sh --test csvFile -n 1 -p 1 -q 2>&1 | tee log.txt
+
+./run_tpch.sh --test csvS3 --s3Select -n 1 -q

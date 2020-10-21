@@ -44,7 +44,7 @@ cd ..
 
 cd benchmark/tpch
 ./build_tpch.sh
-echo "Built s3datasource"
+echo "Built tpch"
 cd ../../
 
 echo "Done building Dike all"

@@ -4,6 +4,13 @@ import org.apache.spark.Partition
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.count
+import org.apache.spark.sql.functions.sum
+import org.apache.spark.sql.functions.avg
+import org.apache.spark.sql.functions.udf
 
 object S3DatasourceExample {
 
@@ -28,16 +35,31 @@ object S3DatasourceExample {
       .config("spark.datasource.s3.secretKey", "admin123")
       .getOrCreate()
 
+    import sparkSession.implicits._
+
     // .format("org.apache.spark.sql.execution.datasources.v2.s3")
     val df = sparkSession.read
       .format("com.github.s3datasource")
       .schema(schema)
       .option("format", "csv")
-      .load("s3a://spark-test/s3_data.csv")
+      .load("s3a://spark-test/s3_data.tbl")
 
-    // df.show()
-    df.filter("id > 3 OR age > 40").show()
-    df.filter("id > 0 AND age > 40").show()
+    df.show()
+    if (false) {
+      df.select("id", "name").show()
+      df.filter("id > 3 OR age > 40").show()
+      df.select("id", "name").filter("id > 3 OR age > 40").show()
+      df.select("id", "city").filter("id > 3 OR age > 40").show()
+      df.select("id", "age").filter("id > 3 OR age > 40").show()
+      df.select("name", "age").filter("id > 3 OR age > 40").show()
+      df.select("name", "city").filter("id > 3 OR age > 40").show()
+      df.select("age", "city").filter("id > 3 OR age > 40").show()
+    }
+    df.agg(count("*").as("cnt")).show()
+    //df.groupBy($"city").agg(count("*").as("cnt")).show()
+    //df.groupBy($"city").agg(avg($"age"),count("*").as("cnt")).show()
+    // df.filter("id > 3 OR age > 40").select("id", "name").show()
+    //df.filter("id > 0 AND age > 40").show()
 
     if (false) {
       df.filter("id != 0").show()

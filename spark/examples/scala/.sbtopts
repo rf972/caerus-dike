@@ -1,0 +1,4 @@
+-Dsbt.global.base=/build/sbt/ 
+-Dsbt.ivy.home=/build/ivy2/ 
+-Divy.home=/build/ivy2/ 
+-Dsbt.coursier.home=/build/coursier/
