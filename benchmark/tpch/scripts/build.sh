@@ -2,7 +2,7 @@
 
 echo "Building tpch"
 cd /tpch/tpch-spark
-sbt --ivy /spark/build/ivy package
+sbt package
 
 echo "Building tpch Complete"
 exit $?
