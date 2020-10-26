@@ -16,8 +16,10 @@ import com.amazonaws.services.s3.model.SelectObjectContentRequest;
 import com.amazonaws.services.s3.model.SelectObjectContentResult;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 
 class S3SelectThread extends Thread {
@@ -44,11 +46,25 @@ class S3SelectThread extends Thread {
         ) 
         {
             InputStream resultInputStream = payload.getRecordsInputStream(new SelectObjectContentEventVisitor() {
+                int recordCounter = 0;
                 @Override
                 public void visit(SelectObjectContentEvent.EndEvent event) {
                     isResultComplete.set(true);
-                    System.out.println("Received End Event. Result is complete.");
+                    //System.out.println("Received EndEvent.");
                 }
+                @Override
+                public void visit(SelectObjectContentEvent.RecordsEvent event) {
+                    
+                    //ByteBuffer bb = event.getPayload();                    
+                    //recordCounter += 1;
+                    //System.out.println("Received RecordsEvent : " + recordCounter);
+                }
+                @Override
+                public void visit(SelectObjectContentEvent.ContinuationEvent event) {
+                    
+                    //System.out.println("Received ContinuationEvent.");
+                }
+
             });   
         
             byte[] buf = new byte[8192];            
@@ -115,7 +131,7 @@ public class SelectObjectContent {
     private static String QUERY = "select s.l_orderkey,s.l_partkey,s.l_suppkey,s.l_linenumber,s.l_quantity,s.l_extendedprice,s.l_discount,s.l_tax,s.l_returnflag,s.l_linestatus,s.l_shipdate,s.l_commitdate,s.l_receiptdate,s.l_shipinstruct,s.l_shipmode,s.l_comment from S3Object s";
 
     public static void main(String[] args) {               
-        int threadCount = 8;
+        int threadCount = 1;
 
         if (args.length == 3) {
             BUCKET_NAME = args[0];
@@ -129,7 +145,7 @@ public class SelectObjectContent {
         for(int i = 0; i < threadCount; i++) {
             s3selectThread[i] = new S3SelectThread();
             s3selectThread[i].BUCKET_NAME = BUCKET_NAME;
-            s3selectThread[i].CSV_OBJECT_KEY = CSV_OBJECT_KEY + "." + Integer.toString(i+1);;
+            s3selectThread[i].CSV_OBJECT_KEY = CSV_OBJECT_KEY; // + "." + Integer.toString(i+1);
             s3selectThread[i].QUERY = QUERY;
 
             s3selectThread[i].start();

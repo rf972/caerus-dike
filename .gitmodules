@@ -25,3 +25,6 @@
 [submodule "s3datasource/s3datasource"]
 	path = s3datasource/s3datasource
 	url = https://github.com/rf972/s3datasource.git
+[submodule "dikeS3/poco"]
+	path = dikeS3/poco
+	url = https://github.com/peterpuhov-github/poco.git

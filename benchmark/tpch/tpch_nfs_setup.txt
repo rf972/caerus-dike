@@ -28,7 +28,7 @@ cp mc/build/data/*.csv minio/data
 
 # Stop spark
 cd spark
-./stop_spark.sh
+#./stop_spark.sh
 
 # Start nfs docker
 # Make sure nfs kernel module is loaded
@@ -48,3 +48,4 @@ sudo mount -t nfs4 -o proto=tcp  172.18.0.3:/data $(pwd)/tpch-data
 cd ../
 cd benchmark/tpch
 ./run_tpch.sh --test csvFile -n 1 -p 1 2>&1 | tee log.txt
+

@@ -7,7 +7,7 @@ fi
 cp docker/*-entrypoint.sh ./build
 chmod a+x ./build/*-entrypoint.sh
 
-docker run -p 9000:9000 \
+docker run \
   -e "MINIO_ACCESS_KEY=admin" \
   -e "MINIO_SECRET_KEY=admin123" \
   -e "USE_DIKE_SQL=1" \
