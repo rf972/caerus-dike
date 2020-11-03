@@ -10,10 +10,12 @@ if [ ! -d tpch-data ]; then
 fi
 
 if [ "$1" == "debug" ]; then
-  echo "build with sbt --ivy /build/ivy"
+  echo "Starting build docker."
+  echo "run sbt to build"
   shift
   
   docker run --rm -it --name spark_build_interactive \
+    --network dike-net \
     --mount type=bind,source="$(pwd)"/spark,target=/spark \
     --mount type=bind,source="$(pwd)"/build,target=/build \
     --mount type=bind,source="$(pwd)"/examples,target=/examples \
