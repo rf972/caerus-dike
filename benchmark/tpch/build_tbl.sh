@@ -1,22 +1,34 @@
 #!/bin/bash
 
-DST_DIR=$1
+DATA_DIR=$1
 
-if [ "$#" -ne 1 ] | [ ! -d $DST_DIR ]; then
-  echo "Usage: $0 DST_DIR"
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 DATA_DIR"
   exit 1
 fi
 
-cd tpch-spark/dbgen
-for S in `seq 1 8`;
-do
-        ./dbgen -f -s 1 -S $S -C 8 -v
-done    
-cd ../../
+if [ ! -d $DATA_DIR ]; then
+  echo "Usage: $0 DATA_DIR"
+  exit 1
+fi
 
-mv tpch-spark/dbgen/*.tbl* $DST_DIR
+create_bucket(){
+  BUCKET=$1
+  rm -rf $BUCKET
+  mkdir $BUCKET
+  mv tpch-spark/dbgen/*.tbl* $BUCKET
+  cp schema/* $BUCKET
+}
 
-for f in nation region supplier customer part partsupp orders lineitem
-do    
-    cp csv_headers/$f.csv $DST_DIR/$f.schema
-done
+pushd tpch-spark/dbgen
+for S in `seq 1 8`; do ./dbgen -f -s 1 -S $S -C 8 -v ; done
+popd
+
+create_bucket $DATA_DIR/tpch-test-part
+
+pushd tpch-spark/dbgen
+./dbgen -f -s 1 -v
+popd
+
+create_bucket $DATA_DIR/tpch-test
+
