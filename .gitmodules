@@ -25,18 +25,6 @@
 [submodule "s3datasource/s3datasource"]
 	path = s3datasource/s3datasource
 	url = https://github.com/rf972/s3datasource.git
-[submodule "dikeS3/poco"]
-	path = dikeS3/poco
-	url = https://github.com/peterpuhov-github/poco.git
-[submodule "dikeS3/aws-c-common"]
-	path = dikeS3/aws-c-common
-	url = https://github.com/peterpuhov-github/aws-c-common.git
-[submodule "dikeS3/aws-checksums"]
-	path = dikeS3/aws-checksums
-	url = https://github.com/peterpuhov-github/aws-checksums.git
-[submodule "dikeS3/aws-c-event-stream"]
-	path = dikeS3/aws-c-event-stream
-	url = https://github.com/peterpuhov-github/aws-c-event-stream.git
 [submodule "dikeCS"]
 	path = dikeCS
 	url = https://github.com/peterpuhov-github/dikeCS.git
