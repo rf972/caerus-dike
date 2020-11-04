@@ -6,19 +6,10 @@ git clone https://github.com/peterpuhov-github/dike.git
 git submodule init
 git submodule update --recursive
 # Alternatively you can update specific submodules only
-# git submodule update mc/mc mc/minio-go minio/minio
+# git submodule update dikeCS s3datasource
 docker network create dike-net
 ```
 
-minio
-=============
-```bash
-cd dike/minio/docker
-./build_dockers.sh
-cd ../
-./build_server.sh
-./run_server.sh
-```
 spark
 =============
 ```bash
@@ -28,6 +19,34 @@ cd dike/spark
 ./start_spark.sh
 
 ./stop_spark
+```
+
+dikeCS
+=============
+```bash
+cd dikeCS
+
+cd external
+./build_aws.sh
+cd ..
+
+./build.sh
+
+./run_dikeCS.sh
+
+```
+
+minio legacy
+=============
+
+minio
+=============
+```bash
+cd dike/minio/docker
+./build_dockers.sh
+cd ../
+./build_server.sh
+./run_server.sh
 ```
 
 MinIO Client
@@ -46,7 +65,6 @@ cd ../
 ./run_mc_trace.sh minio admin trace -v -a myminio
 
 ```
-
 
 Tests of Spark with minio and spark-select
 ==========================================

@@ -9,7 +9,7 @@ docker run -it --rm  \
 -e "AWS_ACCESS_KEY_ID=admin" \
 -e "AWS_SECRET_ACCESS_KEY=admin123" \
 -e "AWS_EC2_METADATA_DISABLED" \
-maven:3.6.3-jdk-8 java -Xmx1g org.dike.s3.SelectObjectContent 'tpch-test' 'lineitem.tbl' \
+maven:3.6.3-jdk-8 java -Xmx1g org.dike.s3.SelectObjectContent 'tpch-test-part' 'lineitem.tbl' \
 "SELECT * FROM S3Object"
 
 #"SELECT * FROM S3Object LIMIT 1024000"
