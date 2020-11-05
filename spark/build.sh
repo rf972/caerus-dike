@@ -9,12 +9,13 @@ if [ ! -d tpch-data ]; then
   mkdir tpch-data
 fi
 
-if [ "$1" == "debug" ]; then
-  echo "Starting build docker."
+if [[ "$1" == *"debug"* ]]; then
+  echo "Starting build docker. $1"
   echo "run sbt to build"
+  DOCKER_NAME="spark_build_$1"
   shift
   
-  docker run --rm -it --name spark_build_interactive \
+  docker run --rm -it --name $DOCKER_NAME \
     --network dike-net \
     --mount type=bind,source="$(pwd)"/spark,target=/spark \
     --mount type=bind,source="$(pwd)"/build,target=/build \

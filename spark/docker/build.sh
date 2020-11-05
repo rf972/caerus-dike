@@ -34,8 +34,7 @@ fi
 echo "Extracting $SPARK_PACKAGE.tgz -> $SPARK_HOME"
 tar -xzf $SPARK_SRC/$SPARK_PACKAGE.tgz -C $SPARK_BUILD \
  && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME \
- && wget -N -nv -P $SPARK_HOME/jars https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.12/httpclient-4.5.12.jar \
-  && mv $SPARK_HOME/jars/httpclient-4.5.6.jar $SPARK_HOME/jars/httpclient-4.5.6.jar.old \
+ && mv $SPARK_HOME/jars/httpclient-4.5.6.jar $SPARK_HOME/jars/httpclient-4.5.6.jar.old \
   && chown -R root:root $SPARK_HOME
 
 # Build scala examples  
