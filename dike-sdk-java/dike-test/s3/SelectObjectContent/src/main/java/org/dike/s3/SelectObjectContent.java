@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 
@@ -41,13 +43,15 @@ class S3SelectThread extends Thread {
         SelectObjectContentRequest request = generateBaseCSVRequest(BUCKET_NAME, CSV_OBJECT_KEY, QUERY);
         final AtomicBoolean isResultComplete = new AtomicBoolean(false);
         String res = "";
-        long totalDataSize = 0;        
+        long totalDataSize = 0;
+        long totalRecords = 0;
 
         long start_time = System.currentTimeMillis();
-        try (
-        SelectObjectContentResult result = s3client.selectObjectContent(request);
-        SelectObjectContentEventStream payload = result.getPayload();
-        ByteArrayOutputStream out = new ByteArrayOutputStream()
+        try 
+        (
+            SelectObjectContentResult result = s3client.selectObjectContent(request);
+            SelectObjectContentEventStream payload = result.getPayload();
+            ByteArrayOutputStream out = new ByteArrayOutputStream()
         ) 
         {
             InputStream resultInputStream = payload.getRecordsInputStream(new SelectObjectContentEventVisitor() {
@@ -57,13 +61,16 @@ class S3SelectThread extends Thread {
                     isResultComplete.set(true);
                     //System.out.println("Received EndEvent.");
                 }
-                /*
+                
                 @Override
-                public void visit(SelectObjectContentEvent.RecordsEvent event) {                    
+                public void visit(SelectObjectContentEvent.RecordsEvent event) {
+                    byte[] data = event.getPayload().array();
+                    //System.out.println("Received RecordsEvent : " + data.length);
                     //ByteBuffer bb = event.getPayload();                    
                     //recordCounter += 1;
                     //System.out.println("Received RecordsEvent : " + recordCounter);
                 }
+                /*
                 @Override
                 public void visit(SelectObjectContentEvent.ContinuationEvent event) {                    
                     //System.out.println("Received ContinuationEvent.");
@@ -72,7 +79,18 @@ class S3SelectThread extends Thread {
 
             });   
         
-            byte[] buf = new byte[8192];            
+            BufferedReader reader = new BufferedReader(new InputStreamReader(resultInputStream));
+            String line;
+            
+            while ((line = reader.readLine()) != null){                
+                totalRecords += 1;
+                totalDataSize += line.length();
+                if(totalRecords < 5){
+                    res += line + "\n";
+                }
+            }
+            /*
+            byte[] buf = new byte[256 << 10];            
             int n = 0;
             while ((n = resultInputStream.read(buf)) > -1) {                
                 totalDataSize += n;
@@ -82,13 +100,16 @@ class S3SelectThread extends Thread {
                     res = out.toString().trim();                    
                 } 
                               
-            }            
+            } 
+            */
+            
             out.close();
-            resultInputStream.close();
-
+            resultInputStream.close();            
         } catch (Throwable e) {
             throw new RuntimeException("SQL query failure", e);
         }
+        
+
         long end_time = System.currentTimeMillis();
 
         if (!isResultComplete.get()) {
@@ -97,10 +118,10 @@ class S3SelectThread extends Thread {
 
         if (res.length() < 1024) {
             System.out.println(res);
-            System.out.format("Received %d bytes in %.3f sec\n", totalDataSize, (end_time - start_time) / 1000.0);
+            System.out.format("Received %d records (%d bytes) in %.3f sec\n", totalRecords, totalDataSize, (end_time - start_time) / 1000.0);
         } else {
             //System.out.println(res);
-            System.out.format("Received %d bytes in %.3f sec\n", totalDataSize, (end_time - start_time) / 1000.0);
+            System.out.format("Received %d records (%d bytes) in %.3f sec\n", totalRecords, totalDataSize, (end_time - start_time) / 1000.0);
         }
     }
     private static SelectObjectContentRequest generateBaseCSVRequest(String bucket, String key, String query) {
