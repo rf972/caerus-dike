@@ -10,9 +10,16 @@ if [ "$1" == "plugin" ]; then
     sbt --ivy /build/ivy compile
     sbt --ivy /build/ivy package
     exit $?
-else
-    echo "Building spark"
 fi
+if [ "$1" == "incremental" ]; then
+    echo "Building spark incrementally with sbt"
+    cd /spark
+    sbt package
+    exit $?
+fi
+
+echo "Building spark"
+
 # Start fresh, so remove the spark home directory.
 rm -rf $SPARK_HOME
 
