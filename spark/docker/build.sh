@@ -10,9 +10,16 @@ if [ "$1" == "plugin" ]; then
     sbt --ivy /build/ivy compile
     sbt --ivy /build/ivy package
     exit $?
-else
-    echo "Building spark"
 fi
+if [ "$1" == "incremental" ]; then
+    echo "Building spark incrementally with sbt"
+    cd /spark
+    sbt package
+    exit $?
+fi
+
+echo "Building spark"
+
 # Start fresh, so remove the spark home directory.
 rm -rf $SPARK_HOME
 
@@ -34,8 +41,7 @@ fi
 echo "Extracting $SPARK_PACKAGE.tgz -> $SPARK_HOME"
 tar -xzf $SPARK_SRC/$SPARK_PACKAGE.tgz -C $SPARK_BUILD \
  && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME \
- && wget -N -nv -P $SPARK_HOME/jars https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.12/httpclient-4.5.12.jar \
-  && mv $SPARK_HOME/jars/httpclient-4.5.6.jar $SPARK_HOME/jars/httpclient-4.5.6.jar.old \
+ && mv $SPARK_HOME/jars/httpclient-4.5.6.jar $SPARK_HOME/jars/httpclient-4.5.6.jar.old \
   && chown -R root:root $SPARK_HOME
 
 # Build scala examples  
