@@ -22,7 +22,7 @@ if [[ "$1" == *"debug"* ]]; then
     --mount type=bind,source="$(pwd)"/examples,target=/examples \
     --entrypoint /bin/bash -w /spark \
     spark_build $@ 
-else if [[ "$1" == "incremental" ]]; then
+elif [[ "$1" == "incremental" ]]; then
   echo "starting incremental build with sbt"
   
   docker run --rm -it --name spark-incremental \
