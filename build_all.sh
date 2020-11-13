@@ -12,6 +12,7 @@ cd s3datasource
 echo "Built s3datasource"
 cd ..
 
+mkdir minio/data
 cd benchmark/tpch
 ./build_tbl.sh ../../minio/data
 ./build_tpch.sh
