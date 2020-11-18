@@ -35,10 +35,17 @@ class S3SelectThread extends Thread {
     public String QUERY;
 
     public void run(){
-       System.out.println("MyThread running");
-       final AmazonS3 s3client = AmazonS3ClientBuilder.standard()
-       .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://172.18.0.2:9000","us-east-1"))
-       .build();
+        System.out.println("S3SelectThread running");
+
+        String serviceEndpoint = System.getenv("DIKECS_SERVICE_ENDPOINT");
+        if (serviceEndpoint == null || serviceEndpoint.length() == 0) {
+            serviceEndpoint = "http://172.18.0.2:9000";
+        }
+       
+        final AmazonS3 s3client = AmazonS3ClientBuilder.standard()
+        //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://172.18.0.2:9000","us-east-1"))
+        .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(serviceEndpoint,"us-east-1"))
+        .build();
        
         SelectObjectContentRequest request = generateBaseCSVRequest(BUCKET_NAME, CSV_OBJECT_KEY, QUERY);
         final AtomicBoolean isResultComplete = new AtomicBoolean(false);
@@ -175,9 +182,16 @@ public class SelectObjectContent {
         } else if (args.length > 0) {
             QUERY += " " + args[0];
         }
+        
+        String serviceEndpoint = System.getenv("DIKECS_SERVICE_ENDPOINT");
+        if (serviceEndpoint == null || serviceEndpoint.length() == 0) {
+            serviceEndpoint = "http://172.18.0.2:9000";
+        }
 
        final AmazonS3 s3client = AmazonS3ClientBuilder.standard()
-       .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://172.18.0.2:9000","us-east-1"))
+       //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://172.18.0.2:9000","us-east-1"))
+       //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://172.18.0.1:9000","us-east-1"))
+       .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(serviceEndpoint,"us-east-1"))
        .build();
 
         ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(BUCKET_NAME).withMaxKeys(1024).withPrefix("lineitem.tbl");

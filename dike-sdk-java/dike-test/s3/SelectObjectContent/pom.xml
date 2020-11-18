@@ -50,6 +50,10 @@
                                     <Main-Class>org.dike.s3.SelectObjectContent</Main-Class>
                                     <Build-Number>1.0</Build-Number>
                                 </manifestEntries>
+                                <manifestEntries>
+                                    <Main-Class>org.dike.s3.DikeJobTest</Main-Class>
+                                    <Build-Number>1.0</Build-Number>
+                                </manifestEntries>
                             </transformer>
                         </transformers>
                     </configuration>

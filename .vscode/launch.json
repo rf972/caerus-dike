@@ -4,6 +4,25 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "(gdb) dikeCS",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/dikeCS/build/Debug/dikeCS",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [ {"name":"DIKECS_DATA_PATH", "value":"${workspaceFolder}/minio/data"} ],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
         {
             "type": "java",
             "name": "Java test (Attach)",
