@@ -8,17 +8,18 @@ fi
 if [ ! -d $DATA_DIR ]; then
   mkdir $DATA_DIR
 fi
-cp tpch-spark/dbgen/*.tbl ../../spark/build/tpch-data
+cp ../../minio/data/tpch-test/*.tbl* $DATA_DIR
 ./run_tpch.sh --test init 
 STATUS=$?
 if [ $STATUS -eq 0 ];then
   echo "TPCH init Successful"
-  DEST_DIR=../../mc/build/data
+  DEST_DIR=../../minio/data/tpch-test-csv
   if [ ! -d $DEST_DIR ]; then
     mkdir $DEST_DIR
   fi
-  cp $DATA_DIR/*.csv $DEST_DIR
-  echo "Copied resulting csv files to $DEST_DIR"
+  mv $DATA_DIR/*.csv $DEST_DIR
+  echo "csv files created: $DEST_DIR"
+  sudo rm -rf ../../spark/build/tpch-data
 else
   echo "TPCH init Failed"
 fi
