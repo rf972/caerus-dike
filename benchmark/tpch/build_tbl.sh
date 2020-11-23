@@ -9,6 +9,7 @@ fi
 
 if [ ! -d $DATA_DIR ]; then
   echo "Usage: $0 DATA_DIR"
+  echo "Hint: you might need to create the data destination"
   exit 1
 fi
 
