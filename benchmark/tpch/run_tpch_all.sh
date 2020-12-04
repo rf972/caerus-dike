@@ -1,16 +1,7 @@
 #! /bin/bash
 
-for i in $(seq 1 22); 
-do 
-  echo "******** $i starting ********"
-  
-  ./run_tpch.sh $i nodebug 1
-  STATUS=$?
-  if [ $STATUS -ne 0 ] 
-  then
-    echo "******** Status was: $STATUS ********" 
-    break
-  else
-    echo "******** Status was: $STATUS ********"
-  fi
-done
+CURRENT_TIME=$(date "+%Y-%m-%d-%H-%M-%S")
+RESULTS_FILE="/home/rob/caerus/results/tpch/${CURRENT_TIME}_result.txt"
+echo "results file is: $RESULTS_FILE"
+
+script $RESULTS_FILE -c ./run_all_script.sh
