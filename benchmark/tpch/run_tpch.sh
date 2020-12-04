@@ -18,14 +18,18 @@ if [ "$1" == "debug" ]; then
 else
   # --master local
   docker exec -it sparkmaster spark-submit --master local[4] \
+  --conf "log4j.rootCategory=WARN,console" \
+  --conf "ivy.shared.default.root=/build/ivy_jars" \
+  --conf "spark.driver.extraClassPath=/build/extra_jaars/*" \
+  --conf "spark.executor.extraClassPath=/build/extra_jaars/*" \
   --conf "spark.jars.ivy=/build/ivy" \
   --conf "spark.driver.maxResultSize=20g" \
   --conf "spark.driver.memory=20g" \
   --conf "spark.eventLog.enabled=true" \
   --conf "spark.eventLog.dir=/build/spark-events" \
   --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.1.0/jars/*:/examples/scala/target/scala-2.12/" \
-  --packages com.github.scopt:scopt_2.12:4.0.0-RC2,com.amazonaws:aws-java-sdk:1.11.853,org.apache.hadoop:hadoop-aws:3.2.0,org.apache.commons:commons-csv:1.8 \
-  --jars /s3datasource/target/scala-2.12/s3datasource_2.12-0.1.0.jar \
+  --packages com.github.scopt:scopt_2.12:4.0.0-RC2 \
+  --jars /build/extra_jars/*,/s3datasource/target/scala-2.12/s3datasource_2.12-0.1.0.jar \
   /tpch/tpch-spark/target/scala-2.12/spark-tpc-h-queries_2.12-1.0.jar $@
 fi
 
