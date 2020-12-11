@@ -115,7 +115,14 @@ object S3DatasourceTests {
     //sparkSession.sql("SELECT count(*) FROM integers").show()
     //df.show()    
     //query.explain("extended")
-    
+    var df9 = df.groupBy("j").agg(sum("i").as("total_ints")).filter("total_ints > 1")
+    df9.show()
+    df9.explain(true)
+    /*
+    df.groupBy("j").agg(sum("i").as("sumofi"))
+      .sort($"sumofi".desc, $"j").show()
+    df.groupBy("j").agg(sum("i").as("sumofi"))
+      .sort($"sumofi".desc, $"j").explain(true)
     checkRowResult(Seq(Row(5, 12), Row(10, 9)).mkString(","),
                    df.groupBy("j").agg(sum("i")).collect.mkString(","))
     checkRowResult(Seq(Row(12), Row(9)).mkString(","),
@@ -146,17 +153,17 @@ object S3DatasourceTests {
      checkRowResult(Seq(Row(15, 5),Row(40, 10)).mkString(","),
                    sparkSession.sql("SELECT sum(k * j), j FROM integers WHERE i > 1" +
                                     " GROUP BY j")
-                               .collect.mkString(","))
+                               .collect.mkString(","))*/
 
     /* group by multiple j,k */
 
-     /*checkRowResult(Seq(Row(1, 15, 5, 1),Row(2, 40, 10, 2)).mkString(","),
+     checkRowResult(Seq(Row(1, 15, 5, 1),Row(2, 40, 10, 2)).mkString(","),
                    sparkSession.sql("SELECT k, sum(k * j), j, k FROM integers WHERE i > 1" +
                                     " GROUP BY j, k")
-                               .collect.mkString(",")) */
+                               .collect.mkString(","))
 
     /* filter of groups "HAVING" */
-    
+    /*
      checkRowResult(Seq(Row(15),Row(40)).mkString(","),
                    sparkSession.sql("SELECT sum(k * j) FROM integers WHERE i > 1" +
                                     " GROUP BY j")
@@ -191,7 +198,7 @@ object S3DatasourceTests {
                        Row(3, 10), Row(4, 5), Row(5, 10), Row(6, 5)).mkString(","),
                    df.select("i","j").collect.mkString(","))
     checkRowResult(Seq(Row(5,10,2),Row(6,5,1)).mkString(","),
-                   df.filter("i >= 5").collect.mkString(",")) 
+                   df.filter("i >= 5").collect.mkString(","))  */
     //checkResult("1", df.filter("i == 0").count().toString)
     //df.groupBy("j").agg(count($"i")).show()
     sparkSession.stop()
