@@ -4,6 +4,7 @@ from argparse import RawTextHelpFormatter
 import time
 import subprocess
 import sys
+import os
 
 class testRunner:
     def __init__(self):
@@ -38,6 +39,9 @@ class testRunner:
         parser.add_argument("--tests", "-t",
                             help="tests to run\n"
                             "ex. -t 1,2,3,5-9,16-19,21")
+        parser.add_argument("--results", "-r", default="results.csv",
+                            help="results file\n"
+                            "ex. -r results.csv")
         parser.add_argument("--args", "-a",
                             help="args to test\n"
                             'ex. -a "--test tblPartS3 -n 21 --s3Filter --s3Project"')
@@ -115,14 +119,21 @@ class testRunner:
             if lineNum == 4:
                 if self._args.veth:
                     bytes = self.getBytes()
-                    self._testResults.append(line.rstrip() + " " + str(bytes - self._lastVethBytes) + "\n")
+                    self._testResults.append(line.rstrip() + ", " + str(bytes - self._lastVethBytes) + "\n")
                 else:
                     self._testResults.append(line)
                 break
 
     def showResults(self):
-        for r in self._testResults:
-            print(r.rstrip())
+        if os.path.exists(self._args.results):
+            mode = "a"
+        else:
+            mode = "w"
+        with open(self._args.results, mode) as fd:
+            fd.write("Test: {}\n".format(self._args.args))
+            for r in self._testResults:
+                print(r.rstrip())
+                fd.write(r.rstrip() + "\n")
 
     def runTests(self):
         for t in self._testList:
