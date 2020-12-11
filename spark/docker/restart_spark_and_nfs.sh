@@ -7,7 +7,9 @@ fi
 echo "unmount spark/tpch-data and stop spark."
 sudo umount tpch-data
 ./stop_spark.sh
-cd ../minio/nfs_server
+cd spark
+sudo sh ../docker/copy_jars.sh
+cd ../../minio/nfs_server
 docker kill nfsserver
 echo "Wait for nfsserver to stop"
 sleep 2
