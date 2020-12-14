@@ -1,30 +1,16 @@
-[submodule "minio/minio"]
-	path = minio/minio
-	url = https://github.com/peterpuhov-github/minio.git
 [submodule "spark"]
 	path = spark/spark
-	url = https://github.com/rf972/spark.git 
-[submodule "mc/mc"]
-	path = mc/mc
-	url = https://github.com/peterpuhov-github/mc.git
-[submodule "mc/minio-go"]
-	path = mc/minio-go
-	url = https://github.com/peterpuhov-github/minio-go.git
-[submodule "spark-select"]
-	path = spark-select/spark-select
-	url = https://github.com/rf972/spark-select.git
-[submodule "minio/ndp/sqlite"]
-	path = minio/ndp/sqlite
-	url = https://github.com/peterpuhov-github/sqlite.git
-[submodule "minio/ndp/httpparser"]
-	path = minio/ndp/httpparser
-	url = https://github.com/peterpuhov-github/httpparser.git
+	url = https://github.com/huaxingao/spark.git
+	branch = pushdown
 [submodule "benchmark/tpch/tpch-spark"]
 	path = benchmark/tpch/tpch-spark
-	url = https://github.com/peterpuhov-github/tpch-spark.git
+	url = https://github.com/futurewei-cloud/caerus-tpch-spark.git
+	branch = master
 [submodule "s3datasource/s3datasource"]
 	path = s3datasource/s3datasource
-	url = https://github.com/rf972/s3datasource.git
+	url = https://github.com/futurewei-cloud/caerus-s3datasource.git
+	branch = master
 [submodule "dikeCS"]
 	path = dikeCS
-	url = https://github.com/peterpuhov-github/dikeCS.git
+	url = https://github.com/futurewei-cloud/caerus-dikeCS.git
+	branch = master
