@@ -28,6 +28,7 @@ cd $SPARK_SRC
 
 # Only build spark if it was requested, since it takes so long.
 if [ "$1" == "spark" ]; then
+  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz 
   ./dev/make-distribution.sh --name custom-spark --pip --tgz
 fi
 
@@ -36,10 +37,14 @@ if [ ! -d $SPARK_BUILD ]; then
   mkdir $SPARK_BUILD
 fi
 
+if [ ! -d $SPARK_BUILD/spark-events ]; then
+  mkdir $SPARK_BUILD/spark-events
+fi
+
 # Install Spark.
 # Extract our built package into our install directory.
 echo "Extracting $SPARK_PACKAGE.tgz -> $SPARK_HOME"
-tar -xzf $SPARK_SRC/$SPARK_PACKAGE.tgz -C $SPARK_BUILD \
+tar -xzf $SPARK_SRC/spark-*SNAPSHOT*.tgz -C $SPARK_BUILD \
  && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME \
  && mv $SPARK_HOME/jars/httpclient-4.5.6.jar $SPARK_HOME/jars/httpclient-4.5.6.jar.old \
   && chown -R root:root $SPARK_HOME
@@ -69,6 +74,12 @@ unzip -n -q aws-java-sdk.zip \
   && cp ./aws-java-sdk-*/third-party/lib/*.jar $SPARK_BUILD/extra_jars \
   && cp ./aws-java-sdk-*/lib/aws*.jar $SPARK_BUILD/extra_jars \
   && rm -rf ./aws-java-sdk-*
+
+if [ ! -f "$SPARK_BUILD/extra_jars/h2-1.4.200.jar" ]; then
+    cd $SPARK_BUILD/extra_jars
+    echo "downloading h2-1.4.200.jar"
+    wget -nv https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
+fi	
 
 # Build scala examples  
 if [ ! -d "/examples/scala/lib" ]; then
