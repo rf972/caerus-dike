@@ -22,6 +22,7 @@ create_bucket(){
 }
 
 pushd tpch-spark/dbgen
+make
 for S in `seq 1 8`; do ./dbgen -f -s 1 -S $S -C 8 -v ; done
 popd
 

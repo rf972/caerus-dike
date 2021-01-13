@@ -28,7 +28,7 @@ cd $SPARK_SRC
 
 # Only build spark if it was requested, since it takes so long.
 if [ "$1" == "spark" ]; then
-  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz 
+  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true 
   ./dev/make-distribution.sh --name custom-spark --pip --tgz
 fi
 
@@ -75,8 +75,7 @@ unzip -n -q aws-java-sdk.zip \
   && cp ./aws-java-sdk-*/lib/aws*.jar $SPARK_BUILD/extra_jars \
   && rm -rf ./aws-java-sdk-*
 
-if [ ! -f "$SPARK_BUILD/extra_jars/h2-1.4.200.jar" ]; then
-    cd $SPARK_BUILD/extra_jars
+if [ ! -f "h2-1.4.200.jar" ]; then
     echo "downloading h2-1.4.200.jar"
     wget -nv https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
 fi	

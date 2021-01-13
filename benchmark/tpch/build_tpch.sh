@@ -1,4 +1,7 @@
 #!/bin/bash
+if [ ! -d tpch-spark/lib ]; then
+  mkdir tpch-spark/lib
+fi
 if [ ! -d tpch-spark/build ]; then
   mkdir tpch-spark/build
 fi
