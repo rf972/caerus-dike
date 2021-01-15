@@ -1,0 +1,1 @@
+ c_custkey INTEGER, c_name, c_address, c_nationkey INTEGER, c_phone, c_acctbal NUMERIC, c_mktsegment, c_comment

@@ -32,7 +32,8 @@ elif [[ "$1" == "incremental" ]]; then
     --mount type=bind,source="$(pwd)"/examples,target=/examples \
     -w /spark \
     spark_build $@ 
-else  
+else
+  echo "Starting build for $@"	
   cd docker
   ./build_dockers.sh
   cd ..

@@ -1,5 +1,5 @@
 #!/bin/bash
-SPARK_JAR_DIR=../spark/build/spark-3.1.0/jars/
+SPARK_JAR_DIR=../spark/build/spark-3.2.0/jars/
 if [ ! -d $SPARK_JAR_DIR ]; then
   echo "Please build spark before building s3datasource"
   exit 1

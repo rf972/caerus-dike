@@ -42,7 +42,7 @@ docker inspect nfsserver | grep "IPAddress"
 
 cd ../../
 cd spark
-sudo mount -t nfs4 -o proto=tcp  172.18.0.3:/data/tpch-test-csv $(pwd)/tpch-data
+sudo mount -t nfs4 -o proto=tcp  172.18.0.3:/data $(pwd)/tpch-data
 
 ./start_spark.sh
 

@@ -1,0 +1,2 @@
+
+  p_partkey INTEGER, p_name, p_mfgr, p_brand, p_type, p_size INTEGER, p_container, p_retailprice NUMERIC, p_comment

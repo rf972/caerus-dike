@@ -46,7 +46,7 @@ RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.lis
  && apt-get install sbt
 
 # Setup Spark Environment
-ENV SPARK_VERSION 3.1.0
+ENV SPARK_VERSION 3.2.0
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-SNAPSHOT-bin-custom-spark
 ENV SPARK_SRC /spark
 ENV SPARK_BUILD /build

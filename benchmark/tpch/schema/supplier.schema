@@ -1,0 +1,2 @@
+
+  s_suppkey INTEGER, s_name, s_address, s_nationkey INTEGER, s_phone, s_acctbal NUMERIC, s_comment

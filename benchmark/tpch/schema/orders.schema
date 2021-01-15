@@ -1,0 +1,1 @@
+o_orderkey INTEGER, o_custkey INTEGER, o_orderstatus, o_totalprice NUMERIC, o_orderdate, o_orderpriority, o_clerk, o_shippriority INTEGER, o_comment
