@@ -6,7 +6,7 @@ git clone https://github.com/peterpuhov-github/dike.git
 git submodule init
 git submodule update --recursive
 # Alternatively you can update specific submodules only
-# git submodule update dikeCS s3datasource
+# git submodule update dikeCS pushdown-datasource
 docker network create dike-net
 ```
 

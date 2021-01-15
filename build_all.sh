@@ -7,9 +7,9 @@ cd spark
 echo "Built spark"
 cd ..
 
-cd s3datasource
-./build_s3.sh
-echo "Built s3datasource"
+cd pushdown-datasource
+./build.sh
+echo "Built pushdown-datasource"
 cd ..
 
 mkdir minio/data

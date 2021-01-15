@@ -6,11 +6,15 @@
 	path = benchmark/tpch/tpch-spark
 	url = https://github.com/futurewei-cloud/caerus-tpch-spark.git
 	branch = master
-[submodule "s3datasource/s3datasource"]
-	path = s3datasource/s3datasource
-	url = https://github.com/futurewei-cloud/caerus-s3datasource.git
+[submodule "pushdown-datasource"]
+	path = pushdown-datasource/pushdown-datasource
+	url = https://github.com/futurewei-cloud/caerus-pushdown-datasource.git
 	branch = master
 [submodule "dikeCS"]
 	path = dikeCS
 	url = https://github.com/futurewei-cloud/caerus-dikeCS.git
 	branch = master
+[submodule "dikeHDFS"]
+	path = dikeHDFS
+	url = https://github.com/futurewei-cloud/caerus-dikeHDFS.git
+	branch = main
