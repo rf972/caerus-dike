@@ -106,7 +106,7 @@ object S3DatasourceTests {
 
     // .format("org.apache.spark.sql.execution.datasources.v2.s3")
     val df = sparkSession.read
-      .format("com.github.s3datasource")
+      .format("com.github.datasource")
       .schema(schema)
       .option("format", "csv")
       .load("s3a://spark-test/s3_ints.tbl")
@@ -227,7 +227,7 @@ object S3DatasourceTests {
     import sparkSession.implicits._
 
     val df = sparkSession.read
-      .format("com.github.s3datasource")
+      .format("com.github.datasource")
       .schema(schema)
       .option("format", "csv")
       .load("s3a://spark-test/s3_data.tbl")
