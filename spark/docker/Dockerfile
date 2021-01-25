@@ -34,10 +34,10 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 
 # JAVA
 RUN apt-get update \
- && apt install default-jdk scala git maven -y \
+ && apt install openjdk-11-jdk openjdk-8-jdk scala git maven -y \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
- && ln -s /usr/lib/jvm/java-11-openjdk-amd64/bin /usr/lib/jvm/bin
+ && ln -s /usr/lib/jvm/java-8-openjdk-amd64/bin /usr/lib/jvm/bin
 
 # sbt
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list \
@@ -56,10 +56,9 @@ ENV PATH $PATH:${SPARK_HOME}/bin
 ENV echo "export SPARK_HOME=/opt/spark" >> ~/.profile
 ENV echo "export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin" >> ~/.profile
 ENV echo "export PYSPARK_PYTHON=/usr/bin/python3" >> ~/.profile
-
+RUN apt-get -q install -y sudo
 # Configure maven to save artifacts under build
-ENV mkdir /root/.m2 | true
-COPY ./settings.xml /root/.m2/settings.xml
+
 
 ####
 #### Spark build docker stage.
