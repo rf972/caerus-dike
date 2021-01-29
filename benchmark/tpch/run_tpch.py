@@ -10,6 +10,7 @@ class testRunner:
     def __init__(self):
       self._args = None
       self._testList = []
+      self._workersList = []
       self._testResults = []
       self._debug = False
       self._continueOnError = False
@@ -29,6 +30,18 @@ class testRunner:
             else:
                 self._testList.append(int(i))
 
+    def parseWorkersList(self):
+        testItems = self._args.workers.split(",")
+
+        for i in testItems:
+            if "-" in i:
+                r = i.split("-")
+                if len(r) == 2:
+                    for t in range(int(r[0]), int(r[1]) + 1):
+                        self._workersList.append(t)
+            else:
+                self._workersList.append(int(i))
+
     def parseArgs(self):
         parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
                                          description="Helper app for running tpch tests.\n")
@@ -39,6 +52,9 @@ class testRunner:
         parser.add_argument("--tests", "-t",
                             help="tests to run\n"
                             "ex. -t 1,2,3,5-9,16-19,21")
+        parser.add_argument("--workers", "-q", default="1",
+                            help="worker threads\n"
+                            "ex. -w 1,2,3,5-9,16-19,21")
         parser.add_argument("--results", "-r", default="results.csv",
                             help="results file\n"
                             "ex. -r results.csv")
@@ -47,6 +63,7 @@ class testRunner:
                             'ex. -a "--test tblPartS3 -n 21 --s3Filter --s3Project"')
         self._args = parser.parse_args()
         self.parseTestList()
+        self.parseWorkersList()
 
     def print(self, trace, debug=False):
         if not debug or self._debug:
@@ -136,9 +153,10 @@ class testRunner:
                 fd.write(r.rstrip() + "\n")
 
     def runTests(self):
-        for t in self._testList:
-            cmd = "./run_tpch.sh -n {} {}".format(t, self._args.args)
-            self.runCmd(cmd)
+        for w in self._workersList:
+            for t in self._testList:
+                cmd = "./run_tpch.sh -w {} -n {} {}".format(w, t, self._args.args)
+                self.runCmd(cmd)
         self.showResults()
 
     def run(self):

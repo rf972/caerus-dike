@@ -14,11 +14,9 @@ fi
 if [ "$1" == "incremental" ]; then
     echo "Building spark incrementally with sbt"
     cd /spark
-    sbt package
+    build/sbt package
     exit $?
 fi
-
-echo "Building spark"
 
 # Start fresh, so remove the spark home directory.
 rm -rf $SPARK_HOME
@@ -28,6 +26,7 @@ cd $SPARK_SRC
 
 # Only build spark if it was requested, since it takes so long.
 if [ "$1" == "spark" ]; then
+  echo "Building spark"
   rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true 
   ./dev/make-distribution.sh --name custom-spark --pip --tgz
 fi
@@ -44,10 +43,8 @@ fi
 # Install Spark.
 # Extract our built package into our install directory.
 echo "Extracting $SPARK_PACKAGE.tgz -> $SPARK_HOME"
-tar -xzf $SPARK_SRC/spark-*SNAPSHOT*.tgz -C $SPARK_BUILD \
- && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME \
- && mv $SPARK_HOME/jars/httpclient-4.5.6.jar $SPARK_HOME/jars/httpclient-4.5.6.jar.old \
-  && chown -R root:root $SPARK_HOME
+sudo tar -xzf $SPARK_SRC/spark-*SNAPSHOT*.tgz -C $SPARK_BUILD \
+ && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME
 
 # Download jar dependencies needed for using S3
 # We do this to avoid using the --packages argument to spark-submit.
@@ -80,13 +77,5 @@ if [ ! -f "h2-1.4.200.jar" ]; then
     wget -nv https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
 fi	
 
-# Build scala examples  
-if [ ! -d "/examples/scala/lib" ]; then
-  echo "Creating lib Directory"
-  mkdir /examples/scala/lib
-fi
-cd /examples/scala
-cp ../../spark/dist/jars/*.jar ./lib
-sbt package
 
 

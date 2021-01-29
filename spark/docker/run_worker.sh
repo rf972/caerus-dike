@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source docker/setup.sh
+
 docker run --rm -p 8081:8081 \
   --expose 7012 --expose 7013 --expose 7014 --expose 7015 --expose 8881 \
   --name sparkworker \
@@ -12,6 +14,12 @@ docker run --rm -p 8081:8081 \
       -e "SPARK_PUBLIC_DNS=localhost" \
   --mount type=bind,source="$(pwd)"/spark,target=/spark \
   --mount type=bind,source="$(pwd)"/build,target=/build \
-  -v "$(pwd)"/conf/worker:/conf -v "$(pwd)"/data:/tmp/data \
-  spark_run bin/spark-class org.apache.spark.deploy.worker.Worker spark://sparkmaster:7077
+  -v "$(pwd)"/conf/worker:/conf \
+  -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
+  -v "${ROOT_DIR}/build/.gnupg:${DOCKER_HOME_DIR}/.gnupg" \
+  -v "${ROOT_DIR}/build/.sbt:${DOCKER_HOME_DIR}/.sbt" \
+  -v "${ROOT_DIR}/build/.cache:${DOCKER_HOME_DIR}/.cache" \
+  -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
+  -u "${USER_ID}" \
+  "spark-run-${USER_NAME}" bin/spark-class org.apache.spark.deploy.worker.Worker spark://sparkmaster:7077
 

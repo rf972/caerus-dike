@@ -1,4 +1,4 @@
-package io.s3.datasource.tests
+package com.github.datasource.tests
 
 import java.lang.RuntimeException
 import org.apache.spark.Partition

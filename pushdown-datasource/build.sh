@@ -7,21 +7,54 @@ fi
 if [ ! -d pushdown-datasource/lib ]; then
   mkdir pushdown-datasource/lib
 fi
+if [ ! -d build ]; then
+  mkdir build
+fi
 cp $SPARK_JAR_DIR/*spark*.jar pushdown-datasource/lib
+
+SPARK_TEST_JAR_DIR=../spark/spark/
+cp $SPARK_TEST_JAR_DIR/sql/core/target/spark-sql_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
+cp $SPARK_TEST_JAR_DIR/sql/catalyst/target/spark-catalyst_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
+cp $SPARK_TEST_JAR_DIR/core/target/spark-core_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
+
+DIKECLIENTJAR=../dikeHDFS/client/dikeclient/target/dikeclient-1.0-jar-with-dependencies.jar
+if [ ! -f $DIKECLIENTJAR ]; then
+  echo "Please build dikeHDFS client ($DIKECLIENTJAR) before building spark examples"
+  exit 1
+fi
+cp $DIKECLIENTJAR pushdown-datasource/lib
+
+# Bring in environment including ${ROOT_DIR} etc.
+source ../spark/docker/setup.sh
+
 if [ "$#" -gt 0 ]; then
   if [ "$1" == "debug" ]; then
     echo "Debugging"
     shift
     echo "build with:   sbt"
-    docker run --rm -it --name s3_build_debug \
+    docker run --rm -it --name pushdown-datasource_build_debug \
+      --network dike-net \
       --mount type=bind,source="$(pwd)"/../pushdown-datasource,target=/pushdown-datasource \
+      -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
+      -v "${ROOT_DIR}/build/.gnupg:${DOCKER_HOME_DIR}/.gnupg" \
+      -v "${ROOT_DIR}/build/.sbt:${DOCKER_HOME_DIR}/.sbt" \
+      -v "${ROOT_DIR}/build/.cache:${DOCKER_HOME_DIR}/.cache" \
+      -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
+      -u "${USER_ID}" \
       --entrypoint /bin/bash -w /pushdown-datasource/pushdown-datasource\
-      spark_build 
+      spark-build-${USER_NAME}
   fi
 else
   echo "Building pushdown-datasource"
   docker run --rm -it --name pushdown_datasource_build \
+    --network dike-net \
     --mount type=bind,source="$(pwd)"/../pushdown-datasource,target=/pushdown-datasource \
+    -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
+    -v "${ROOT_DIR}/build/.gnupg:${DOCKER_HOME_DIR}/.gnupg" \
+    -v "${ROOT_DIR}/build/.sbt:${DOCKER_HOME_DIR}/.sbt" \
+    -v "${ROOT_DIR}/build/.cache:${DOCKER_HOME_DIR}/.cache" \
+    -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
+    -u "${USER_ID}" \
     --entrypoint /pushdown-datasource/scripts/build.sh -w /pushdown-datasource/pushdown-datasource \
-    spark_build
+    spark-build-${USER_NAME}
 fi
