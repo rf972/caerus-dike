@@ -10,6 +10,8 @@ import os
 class testRunner:
     def __init__(self):
       self._args = None
+      self._successCount = 0
+      self._failureCount = 0
       self._testList = [1, 2, 3, 4, 5, 6, 7, 8, 9,
                         10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
     def parseArgs(self):
@@ -106,7 +108,10 @@ class testRunner:
                     diffFileList.append(baseFile)
             # We allow the baseline directory to have multiple possible matches.
             # the one file we are comparing against (compFilePath), must match one of these.
+            # Thus, if they all disagree, then none matched.
             if len(diffFileList) == len(baseFileList):
+                # No matches, keep track of it.
+                self._failureCount += 1
                 for diffFile in diffFileList:
                     if self._args.terse:
                         print("{} Test: {} DIFFER".format(compareDirName, test))
@@ -116,6 +121,9 @@ class testRunner:
                         subprocess.call("meld {} {}".format(baseFile, compareFile), shell=True)
                         print("meld {} {}".format(baseFile, compareFile))
                         #print("Result of diff {} {} was {}".format(d1File, compareFile, rc))
+            else:
+                # They matched, keep track of it.
+                self._successCount += 1
 
     def run(self):
         self.parseArgs()
@@ -125,10 +133,12 @@ class testRunner:
                          self._args.compare, self._testList)
         else:
             dirList = glob.glob(self._args.results + os.path.sep + "*")
-
+            #print(dirList)
             for resultRootDir in dirList:
                 self.runDiff(self._args.baseline,
                              resultRootDir, self._testList)
+        print("Successes: {}".format(self._successCount))
+        print("Failures: {}".format(self._failureCount))
 
 if __name__ == "__main__":
     r = testRunner()

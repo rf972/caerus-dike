@@ -12,7 +12,7 @@ do
 key="$1"
 
 case $key in
-    -w|--workers)
+    -w)
     WORKERS="$2"
     shift # past argument
     shift # past value
