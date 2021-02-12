@@ -12,6 +12,7 @@ class testRunner:
       self._args = None
       self._successCount = 0
       self._failureCount = 0
+      self._skipCount = 0
       self._testList = [1, 2, 3, 4, 5, 6, 7, 8, 9,
                         10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
     def parseArgs(self):
@@ -91,7 +92,8 @@ class testRunner:
             index = 0
             for baseFile in baseFileList:
                 if (baseFile == None or compareFile == None):
-                    print("{} Skipping {}".format(compareDirName, test))
+                    if not self._args.terse:
+                        print("{} Skipping {}".format(compareDirName, test))
                     continue
                 if (self._args.debug):
                     rc = subprocess.call("/usr/bin/diff -q {} {}".format(baseFile, compareFile), shell=True)
@@ -121,9 +123,12 @@ class testRunner:
                         subprocess.call("meld {} {}".format(baseFile, compareFile), shell=True)
                         print("meld {} {}".format(baseFile, compareFile))
                         #print("Result of diff {} {} was {}".format(d1File, compareFile, rc))
-            else:
+            elif compareFile != None:
                 # They matched, keep track of it.
                 self._successCount += 1
+            else:
+                # If there was no file, then we skipped it.
+                self._skipCount += 1
 
     def run(self):
         self.parseArgs()
@@ -138,7 +143,8 @@ class testRunner:
                 self.runDiff(self._args.baseline,
                              resultRootDir, self._testList)
         print("Successes: {}".format(self._successCount))
-        print("Failures: {}".format(self._failureCount))
+        print("Skipped:   {}".format(self._skipCount))
+        print("Failures:  {}".format(self._failureCount))
 
 if __name__ == "__main__":
     r = testRunner()
