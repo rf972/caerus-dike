@@ -6,6 +6,7 @@ import subprocess
 import sys
 import glob
 import os
+import re
 
 KEY=\
 """Key:
@@ -24,6 +25,7 @@ tblS3 - Our V2 datasource using a single file.
 class testRunner:
     def __init__(self):
       self._args = None
+      self._title = ""
       self._lines = {}
       self._linesWritten = 0
       self._testList = []
@@ -58,20 +60,27 @@ class testRunner:
     def parseTestList(self):
         self._testList = self._args.tests.split(",")
     def isTestBreak(self, line):
-        tests = ["--workers 1 --test tblHdfs \n",
-                 "--workers 1 --test tblHdfs -p 1 \n",
-                 "--workers 4 --test tblHdfs \n",
-                 "--workers 6 --test tblHdfs \n",
+        tests = ["--workers 1 --test tblWebHdfs \n",
+                 "--workers 1 --test tblWebHdfs -p 1 \n",
+                 "--workers 4 --test tblWebHdfs \n",
                  "--workers 1 --test tblPartS3 \n",
                  "--workers 4 --test tblPartS3 \n",
-                 "--workers 6 --test tblPartS3 \n",
                  "--workers 1 --test tblS3 -p 1 \n" ]
         for test in tests:
             if test in line.replace("--check", ""):
                 return True
         return False
+
+    def createTitle(self, header):
+        workers = re.findall(r'--workers (\d+) ', header)
+        test = re.findall(r'--test (\w+)', header)
+        partitions = re.findall(r'(-p 1)', header)
+        self._title = "workers: {} {}".format(workers[0], 
+                      "single partition" if len(partitions) else "")
     def processHeader(self, header):
-        newHeader = header.replace("Test: --workers ", "W").replace("--test ", "")
+        newHeader = re.sub(r"Test: --workers \d+ ", "", header)
+        newHeader = re.sub(r"--test ", "", newHeader)
+        newHeader = re.sub(r"--check", "", newHeader)
         newHeader = newHeader.replace("--s3Filter --s3Project","Filt/Proj")
         newHeader = newHeader.replace("--s3Select","Aggregate")
         return newHeader
@@ -103,6 +112,7 @@ class testRunner:
                             break
                     index = 0
                     test += 1
+                    self.createTitle(line)
                     line = self.processHeader(line)
                     if test == 0:
                         line += ",,,"
@@ -131,6 +141,8 @@ class testRunner:
     def writeFile(self):
         if self._fileHandle == 0:
             self._fileHandle = open(self._outputFile, "w+")
+
+        self._fileHandle.write("{}\n".format(self._title))
         for k in self._lines.keys():                
             self._fileHandle.write("{}\n".format(self._lines[k]))
             self._linesWritten += 1
