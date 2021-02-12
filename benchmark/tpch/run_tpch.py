@@ -140,6 +140,7 @@ class testRunner:
                     bytes = self.getBytes()
                     self._testResults.append(line.rstrip() + ", " + str(bytes - self._lastVethBytes) + "\n")
                 else:
+                    print(line.rstrip())
                     self._testResults.append(line)
                 break
 

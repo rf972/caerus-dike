@@ -7,25 +7,39 @@ echo "results file is: $RESULTS_FILE"
 TESTS="-t 1-22"
 #EXTRA_DEFAULT="--dry_run --results $RESULTS_FILE"
 EXTRA_DEFAULT="--results $RESULTS_FILE"
-
+hdfs_baseline() {
+    local WORKERS="--workers $1"
+    local EXTRA="$2"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfs $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfs $EXTRA"
+}
 hdfs_all() {
     local WORKERS="--workers $1"
     local EXTRA="$2"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfs $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfs $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfsDs $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfsDs $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfsNoProc $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter --s3Project $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Select $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfsDs $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfsDs $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfsNoProc $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter --s3Project $EXTRA"
 }
-hdfs() {
+hdfs_check() {
     local EXTRA=$1
     hdfs_all 1 "-p 1 $EXTRA"
     hdfs_all 1 "$EXTRA"
     hdfs_all 4 "$EXTRA"
-    hdfs_all 6 "$EXTRA"
+}
+hdfs_perf() {
+    local EXTRA=$1
+    hdfs_baseline 1 "$EXTRA"
+    hdfs_all 1 "$EXTRA"
+    hdfs_baseline 4 "$EXTRA"
+    hdfs_all 4 "$EXTRA"
+}
+hdfs_short() {
+    local EXTRA=$1
+    hdfs_all 4 "$EXTRA"
+    hdfs_baseline 4 "$EXTRA"
 }
 s3_tblPart() {
     local WORKERS="--workers $1"
@@ -49,13 +63,14 @@ s3() {
 
     s3_tblPart 1 $EXTRA
     s3_tblPart 4 $EXTRA
-    s3_tblPart 6 $EXTRA
     s3_tbl 1 "-p 1 $EXTRA"
 }
 if [ "$1" == "hdfscheck" ]; then
-  hdfs "--check"
+  hdfs_check "--check"
+elif [ "$1" == "hdfsshort" ]; then
+  hdfs_short ""
 elif [ "$1" == "hdfsperf" ]; then
-  hdfs ""
+  hdfs_perf ""
 elif [ "$1" == "s3check" ]; then
   s3 "--check"
 elif [ "$1" == "s3perf" ]; then
