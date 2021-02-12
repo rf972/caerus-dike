@@ -10,14 +10,14 @@ fi
 if [ ! -d build ]; then
   mkdir build
 fi
-cp $SPARK_JAR_DIR/*spark*.jar pushdown-datasource/lib
+cp $SPARK_JAR_DIR/*.jar pushdown-datasource/lib
 
 SPARK_TEST_JAR_DIR=../spark/spark/
 cp $SPARK_TEST_JAR_DIR/sql/core/target/spark-sql_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
 cp $SPARK_TEST_JAR_DIR/sql/catalyst/target/spark-catalyst_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
 cp $SPARK_TEST_JAR_DIR/core/target/spark-core_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
 
-DIKECLIENTJAR=../dikeHDFS/client/dikeclient/target/dikeclient-1.0-jar-with-dependencies.jar
+DIKECLIENTJAR=../dikeHDFS/client/dikeclient/target/dikeclient-1.0.jar
 if [ ! -f $DIKECLIENTJAR ]; then
   echo "Please build dikeHDFS client ($DIKECLIENTJAR) before building spark examples"
   exit 1
