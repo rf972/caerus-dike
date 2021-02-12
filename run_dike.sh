@@ -1,7 +1,7 @@
 #! /bin/bash
 
 cd spark
-./docker/restart_spark_and_nfs.sh
+./docker/restart_spark.sh
 
 cd ../dikeCS
 pwd
