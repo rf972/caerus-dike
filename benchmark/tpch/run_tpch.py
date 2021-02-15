@@ -14,9 +14,9 @@ class testRunner:
       self._testResults = []
       self._debug = False
       self._continueOnError = False
-      self._dry_run = False
       self._lastVethBytes = 0
       self._veth = None
+      self._startTime = time.time()
 
     def parseTestList(self):
         testItems = self._args.tests.split(",")
@@ -49,6 +49,8 @@ class testRunner:
                             help="enable debug output")
         parser.add_argument("--veth", "-v", action="store_true",
                             help="track veth bytes")
+        parser.add_argument("--dry_run", action="store_true",
+                            help="Do not run tests, just print tests to run.")
         parser.add_argument("--tests", "-t",
                             help="tests to run\n"
                             "ex. -t 1,2,3,5-9,16-19,21")
@@ -88,8 +90,8 @@ class testRunner:
         output_lines = []
         if show_cmd or self._debug:
             print("{}: {} ".format(sys.argv[0], command))
-        if self._dry_run:
-            print("")
+        if self._args.dry_run:
+            #print("")
             return 0, output_lines
         if no_capture:
             rc = subprocess.call(command, shell=True)
@@ -138,6 +140,7 @@ class testRunner:
                     bytes = self.getBytes()
                     self._testResults.append(line.rstrip() + ", " + str(bytes - self._lastVethBytes) + "\n")
                 else:
+                    print(line.rstrip())
                     self._testResults.append(line)
                 break
 
@@ -152,19 +155,26 @@ class testRunner:
                 print(r.rstrip())
                 fd.write(r.rstrip() + "\n")
 
+    def displayElapsed(self):
+        end = time.time()
+        hours, rem = divmod(end - self._startTime, 3600)
+        minutes, seconds = divmod(rem, 60)
+        print("elapsed time: {:2}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds)))
+
     def runTests(self):
         for w in self._workersList:
             for t in self._testList:
                 cmd = "./run_tpch.sh -w {} -n {} {}".format(w, t, self._args.args)
                 self.runCmd(cmd)
         self.showResults()
+        self.displayElapsed()
 
     def run(self):
         self.parseArgs()
-
+        
         self.runTests()
 
 if __name__ == "__main__":
     r = testRunner()
-
     r.run()
+

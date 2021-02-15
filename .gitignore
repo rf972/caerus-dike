@@ -1,2 +1,7 @@
 */build/*
 minio/data/*
+
+spark/examples/scala/.bsp/*
+spark/examples/scala/target/*
+spark/examples/scala/lib/*
+spark/examples/scala/project/*

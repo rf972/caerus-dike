@@ -68,6 +68,10 @@ object UnitTest {
     setupDatabase()
     import sparkSession.implicits._
 
+    val df = sparkSession.sql("select SUM(DEPT) FROM h2.test.employee")
+    df.show()
+    val df1 = sparkSession.sql("select SUM(DISTINCT DEPT) FROM h2.test.employee")
+    df1.show()
      /* sparkSession.catalog.listTables.show()
     sparkSession.sql("show tables").show()
     val df7 = sparkSession.sql("select MIN(SALARY), MIN(BONUS), SUM(SALARY * BONUS) FROM h2.test.employee")
@@ -82,7 +86,7 @@ object UnitTest {
     val df10 = sparkSession.sql("select NAME, SUM(SALARY+BONUS), NAME, DEPT FROM h2.test.employee" +
     " GROUP BY NAME, DEPT")
     df10.explain()
-    df10.show() */
+    df10.show()
     val df = sparkSession.table("h2.test.employee")
     var tbl1 = df.select($"DEPT", $"SALARY", $"NAME")
     var tbl2 = df.select($"DEPT", $"BONUS", $"NAME")
@@ -90,18 +94,6 @@ object UnitTest {
     query1.show()
     query1.explain(true)
 
-    val connectionProperties = new Properties()
-    connectionProperties.put("user", "testUser")
-    connectionProperties.put("password", "testPass")
-    val dfl = sparkSession.read
-                         .option("driver", "org.h2.Driver")
-                         .jdbc("jdbc:h2:" + tempDir.getCanonicalPath, "test.employee", connectionProperties)
-                         //.load()
-                         //.option("dbtable", "tpch." + name)
-                         //.option("user", "testUser")
-                         //.option("password", "testPass")
-                         //
-                         //.option("url", url)
     dfl.show()
     dfl.explain(true)
     /* val df = sparkSession.table("h2.test.employee")
@@ -192,6 +184,6 @@ object UnitTest {
     //df5.explain(true)
     //df5.show()
     // checkAnswer(df5, Seq(Row(4)))
-    println("Done")
+    println("Done")*/
   }
 }
