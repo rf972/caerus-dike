@@ -16,7 +16,7 @@ docker run --rm -p 4040:4040 -p 6066:6066 -p 7077:7077 -p 8080:8080 -p 5005:5005
   --mount type=bind,source="$(pwd)"/../dikeHDFS,target=/dikeHDFS \
   --mount type=bind,source="$(pwd)"/../benchmark/tpch,target=/tpch \
   --mount type=bind,source="$(pwd)"/../pushdown-datasource/pushdown-datasource,target=/pushdown-datasource \
-  -v "$(pwd)"/../spark/tpch-data:/tpch-data \
+  -v "$(pwd)"/../minio/data:/tpch-data \
   -v "$(pwd)"/conf/master:/conf  \
   -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
   -v "${ROOT_DIR}/build/.gnupg:${DOCKER_HOME_DIR}/.gnupg" \

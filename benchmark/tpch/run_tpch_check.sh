@@ -38,8 +38,8 @@ hdfs_perf() {
 }
 hdfs_short() {
     local EXTRA=$1
-    hdfs_all 4 "$EXTRA"
     hdfs_baseline 4 "$EXTRA"
+    hdfs_all 4 "$EXTRA"
 }
 s3_tblPart() {
     local WORKERS="--workers $1"
@@ -61,7 +61,7 @@ s3_tbl() {
 s3() {
     local EXTRA=$1
 
-    s3_tblPart 1 $EXTRA
+    #s3_tblPart 1 $EXTRA
     s3_tblPart 4 $EXTRA
     s3_tbl 1 "-p 1 $EXTRA"
 }
@@ -81,6 +81,6 @@ elif [ "$1" == "all" ]; then
   s3 ""
   s3 "--check"
 else
-  echo "missing test: provide test to run (hdfscheck,hdfsperf,s3check,s3perf)"
+  echo "missing test: provide test to run (hdfscheck,hdfsperf,hdfsshort,s3check,s3perf)"
 fi
 #./diff_tpch.py --terse 
