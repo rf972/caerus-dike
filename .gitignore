@@ -5,3 +5,9 @@ spark/examples/scala/.bsp/*
 spark/examples/scala/target/*
 spark/examples/scala/lib/*
 spark/examples/scala/project/*
+
+spark/examples/ndp/.bsp/*
+spark/examples/ndp/target/*
+spark/examples/ndp/lib/*
+spark/examples/ndp/project/*
+spark/examples/ndp/build/*
