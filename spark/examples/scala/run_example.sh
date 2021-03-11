@@ -1,9 +1,9 @@
 #!/bin/bash
-
+TEST=DatasourceS3Tests #DatasourceHdfsTests
 if [ "$1" == "debug" ]; then
   echo "Debugging"
   docker exec -it sparkmaster spark-submit --master local \
-  --class com.github.datasource.tests.DatasourceHdfsTests \
+  --class com.github.datasource.tests.${TEST} \
   --conf "spark.jars.ivy=/build/ivy" \
   --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.2.0/jars/*:/examples/scala/target/scala-2.12/ -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=172.18.0.2:5005" \
   --packages com.github.scopt:scopt_2.12:4.0.0-RC2 \
@@ -14,7 +14,7 @@ if [ "$1" == "debug" ]; then
 #  --jars /pushdown-datasource/target/scala-2.12/pushdown-datasource_2.12-0.1.0.jar \
 else
   docker exec -it sparkmaster spark-submit --master local \
-  --class com.github.datasource.tests.DatasourceHdfsTests \
+  --class com.github.datasource.tests.${TEST} \
   --conf "spark.jars.ivy=/build/ivy" \
   --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.2.0/jars/*:/examples/scala/target/scala-2.12/" \
   --packages com.github.scopt:scopt_2.12:4.0.0-RC2 \
