@@ -20,7 +20,7 @@ cp $SPARK_TEST_JAR_DIR/core/target/spark-core_2.12-3.2.0-SNAPSHOT-tests.jar push
 DIKECLIENTJAR=../dikeHDFS/client/ndp-hdfs/target/ndp-hdfs-1.0.jar
 
 if [ ! -f $DIKECLIENTJAR ]; then
-  echo "Please build dikeHDFS client ($DIKECLIENTJAR) before building spark examples"
+  echo "Please build dikeHDFS client ($DIKECLIENTJAR) before building pushdown-datasource"
   exit 1
 fi
 cp $DIKECLIENTJAR pushdown-datasource/lib

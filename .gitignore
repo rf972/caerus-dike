@@ -1,5 +1,5 @@
 */build/*
-minio/data/*
+data/
 
 spark/examples/scala/.bsp/*
 spark/examples/scala/target/*
