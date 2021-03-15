@@ -17,51 +17,65 @@ git submodule update --recursive --progress
 
 Build code
 ===========
+
+```
 ./build.sh
+```
 
 Clean out artifacts
 ===================
+
+```
 ./clean.sh
-
-spark
-=============
-```bash
-cd dike/spark
-./build.sh
-
-./start_spark.sh
-
-./stop_spark
 ```
 
-dikeCS
-=============
-```bash
-cd dikeCS
-
-cd external
-./build_aws.sh
-cd ..
-
-./build.sh
-
-./run_dikeCS.sh
-
-```
-Test of spark with HDFS (dikeHDFS)
-==================================
-
-cd dikeHDFS
-./start_server.sh
-
-# In separate window
-# Make sure that your path is correct
-DATA=data/
-./run_init_tpch.sh ${DATA}
-echo "Done building Dike all"
-
-Test of spark with S3 server (DikeCS)
+Test of spark with HDFS NDP server (dikeHDFS)
 ==========================================
+First, bring up the Spark and the HDFS server dockers.  
+./run_hdfs.sh
+
+Then, in a separate window initialize the tpch database in HDFS.
+
 ```
+cd dikeHDFS
+./run_init_tpch.sh ../data
+cd ..
+```
+
+Run query with no pushdown
+
+```
+cd benchmark/tpch
+./run_tpch.sh -n 6 --test tblDikeHdfs
+```
+
+Run query with pushdown enabled.
+
+```
+./run_tpch.sh -n 6 --test tblDikeHdfs --s3Select
+```
+
+Test of spark with S3 server (dikeCS)
+==========================================
+First, bring up the Spark and the S3 server dockers.  This step also initializes the tpch database in S3.
+
+
+```
+./run_s3.sh
+```
+
+Then, in a separate window run the test:
+
+Run query with no pushdown
+
+```
+cd benchmark/tpch
+./run_tpch.sh -n 6 --test tblS3
+```
+
+Run query with pushdown enabled.
+
+```
+./run_tpch.sh -n 6 --test tblS3 --s3Select
 ```
 
