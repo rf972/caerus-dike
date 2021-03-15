@@ -5,10 +5,6 @@ if [ ! -d build ]; then
   mkdir conf | true
 fi
 
-if [ ! -d tpch-data ]; then
-  mkdir tpch-data
-fi
-
 # Include the setup for our cached local directories. (.m2, .ivy2, etc)
 source docker/setup.sh
 

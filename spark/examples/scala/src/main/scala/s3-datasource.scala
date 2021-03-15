@@ -19,7 +19,7 @@ import scala.reflect.runtime.universe._
 
 import org.apache.spark.sql.Row
 
-object S3DatasourceTests {
+object DatasourceS3Tests {
   def checkRowResult(expected: String, received: String) {
     checkResult(expected, received)
   }
@@ -96,9 +96,9 @@ object S3DatasourceTests {
     val sparkSession = SparkSession.builder
       .master("local[2]")
       .appName("example")
-      .config("spark.datasource.s3.endpoint", s"""http://$s3IpAddr:9000""")
-      .config("spark.datasource.s3.accessKey", "admin")
-      .config("spark.datasource.s3.secretKey", "admin123")
+      .config("spark.datasource.pushdown.endpoint", s"""http://$s3IpAddr:9000""")
+      .config("spark.datasource.pushdown.accessKey", "admin")
+      .config("spark.datasource.pushdown.secretKey", "admin123")
       .getOrCreate()
     //sparkSession.sparkContext.setLogLevel("TRACE")
 
@@ -109,15 +109,33 @@ object S3DatasourceTests {
       .format("com.github.datasource")
       .schema(schema)
       .option("format", "csv")
+      /*.option("DisableFilterPush", "")
+      .option("DisableProjectPush", "")
+      .option("DisableAggregatePush", "") */
       .load("s3a://spark-test/s3_ints.tbl")
     df.createOrReplaceTempView("integers")
 
     //sparkSession.sql("SELECT count(*) FROM integers").show()
     //df.show()    
     //query.explain("extended")
-    var df9 = df.groupBy("j").agg(sum("i").as("total_ints")).filter("total_ints > 1")
-    df9.show()
-    df9.explain(true)
+
+    //df.agg(countDistinct("j", "k")).show()
+    df.agg(countDistinct("j", "k")).show()
+    df.agg(countDistinct("i")).show()
+    /*sparkSession.sql("SELECT count(*) FROM integers").show()
+    sparkSession.sql("SELECT count(i) FROM integers WHERE j = 15").show()
+    sparkSession.sql("SELECT count(k) FROM integers WHERE j = 5").show()
+    sparkSession.sql("SELECT count(j) FROM integers WHERE k = 2").show()
+    sparkSession.sql("SELECT count(k) FROM integers WHERE k = 2 OR j = 5").show()
+    sparkSession.sql("SELECT count(k,j) FROM integers WHERE k = 2 OR j = 5").show()
+    df.groupBy("k").agg(count("j"), count("i")).show()
+    df.groupBy("j").agg(count("j"), count("i")).show() 
+    df.agg(countDistinct("j", "k"), countDistinct("i"), countDistinct("i","j")).show()
+    df.agg(countDistinct("i", "j", "k")).show()*/
+    //df.agg(count("j"), count("i")).show()
+    //var df9 = df.groupBy("j").agg(sum("i").as("total_ints")).filter("total_ints > 1")
+    //df9.show()
+    //df9.explain(true)
     /*
     df.groupBy("j").agg(sum("i").as("sumofi"))
       .sort($"sumofi".desc, $"j").show()
@@ -157,10 +175,10 @@ object S3DatasourceTests {
 
     /* group by multiple j,k */
 
-     checkRowResult(Seq(Row(1, 15, 5, 1),Row(2, 40, 10, 2)).mkString(","),
+     /*checkRowResult(Seq(Row(1, 15, 5, 1),Row(2, 40, 10, 2)).mkString(","),
                    sparkSession.sql("SELECT k, sum(k * j), j, k FROM integers WHERE i > 1" +
                                     " GROUP BY j, k")
-                               .collect.mkString(","))
+                               .collect.mkString(","))*/
 
     /* filter of groups "HAVING" */
     /*
@@ -218,9 +236,9 @@ object S3DatasourceTests {
     val sparkSession = SparkSession.builder
       .master("local[2]")
       .appName("example")
-      .config("spark.datasource.s3.endpoint", s"""http://$s3IpAddr:9000""")
-      .config("spark.datasource.s3.accessKey", "admin")
-      .config("spark.datasource.s3.secretKey", "admin123")
+      .config("spark.datasource.pushdown.endpoint", s"""http://$s3IpAddr:9000""")
+      .config("spark.datasource.pushdown.accessKey", "admin")
+      .config("spark.datasource.pushdown.secretKey", "admin123")
       .getOrCreate()
     // sparkSession.sparkContext.setLogLevel("TRACE")
 

@@ -17,11 +17,12 @@ hdfs_all() {
     local WORKERS="--workers $1"
     local EXTRA="$2"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter --s3Project $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Select $EXTRA"
     #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfsDs $EXTRA"
     #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfsDs $EXTRA"
     #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfsNoProc $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter --s3Project $EXTRA"
 }
 hdfs_check() {
     local EXTRA=$1
