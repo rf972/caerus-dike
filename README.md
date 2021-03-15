@@ -20,25 +20,25 @@ For more information, see the [Design Specification](doc/ndp_design.pdf)
 Components
 ===========
 
-Spark - The version of spark we build in this repo is a patch which contains
-        the support for Aggregate pushdown in Spark.<BR>
-pushdown-datasource - This is a mew Spark V2 datasource, which has support for
+<B>Spark</B> - The version of spark we build in this repo is a patch which contains
+               the support for Aggregate pushdown in Spark.  https://github.com/apache/spark/pull/29695 <BR><BR>
+<B>pushdown-datasource</B> - This is a new Spark V2 datasource, which has support for
                       pushdown of filter, project and aggregate.
-                      This data source can operate against either HDFS or S3.<BR>
-dikeCS - A new S3 server, built on the POCO C++ Libraries, 
+                      This data source can operate against either HDFS or S3.<BR><BR>
+<B>dikeCS</B> - A new S3 server, built on the <B>POCO C++ Libraries</B>, 
          but supporting S3-select API, which supports SQL Query pushdown, of filter, project and aggregate.
-         This server utilizes SQLite for the query engine.<BR>
-dikeHDFS - This contains our NDP server for HDFS.  
+         This server utilizes SQLite for the query engine.<BR><BR>
+<B>dikeHDFS</B> - This contains our NDP server for HDFS.  
            This server utilizes a proxy in front of HDFS.
-           This also contains use of SQLite as the query engine.<BR>
-TPC-H - This is a fork of https://github.com/ssavvides/tpch-spark,  
+           This also contains use of <B>SQLite</B> as the query engine.<BR><BR>
+<B>TPC-H</B> - This is a fork of https://github.com/ssavvides/tpch-spark,  
         which is: TPC-H queries implemented in Spark using the DataFrames API. 
         We modified this:
         * to support our data source for S3, HDFS
         * to support a variety of data formats (csv, tbl)
         * to support a variety of testing modes such as selecting the
         pushdown used (with or without pushdown, project, filter, aggregate),
-        selecting the number of partitions, or spark workers, etc.<BR>
+        selecting the number of partitions, or spark workers, etc.<BR><BR>
 
 Setup
 =====
