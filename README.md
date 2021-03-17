@@ -44,7 +44,8 @@ Setup
 =====
 
 ```bash
-git clone https://<server here>/dike.git
+git git clone https://github.com/futurewei-cloud/caerus-dike.git
+cd caerus-dike
 git submodule init
 git submodule update --recursive --progress
 # Alternatively you can update specific submodules only
