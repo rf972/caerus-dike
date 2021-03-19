@@ -62,7 +62,7 @@ class testRunner:
                             "ex. -r results.csv")
         parser.add_argument("--args", "-a",
                             help="args to test\n"
-                            'ex. -a "--test tblPartS3 -n 21 --s3Filter --s3Project"')
+                            'ex. -a "--test tblPartS3 -t 21 --s3Filter --s3Project"')
         self._args = parser.parse_args()
         self.parseTestList()
         self.parseWorkersList()
@@ -164,7 +164,7 @@ class testRunner:
     def runTests(self):
         for w in self._workersList:
             for t in self._testList:
-                cmd = "./run_tpch.sh -w {} -n {} {}".format(w, t, self._args.args)
+                cmd = "./run_tpch.sh -w {} -t {} {}".format(w, t, self._args.args)
                 self.runCmd(cmd)
         self.showResults()
         self.displayElapsed()
