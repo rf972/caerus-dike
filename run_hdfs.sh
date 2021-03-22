@@ -8,5 +8,7 @@ if [ ! -d data ]; then
   ./init_tpch.sh
 fi
 
-cd dikeHDFS
-./start_server.sh
+pushd dikeHDFS
+./hadoop/start.sh bin/start-hadoop.sh
+popd
+
