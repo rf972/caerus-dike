@@ -10,19 +10,18 @@ EXTRA_DEFAULT="--results $RESULTS_FILE"
 hdfs_baseline() {
     local WORKERS="--workers $1"
     local EXTRA="$2"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfs $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfs $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds spark --protocol hdfs $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds spark --protocol webhdfs $EXTRA"
 }
 hdfs_all() {
     local WORKERS="--workers $1"
     local EXTRA="$2"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Filter --s3Project $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfs --s3Select $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblHdfsDs $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblWebHdfsDs $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblDikeHdfsNoProc $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --s3Filter $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --s3Filter --s3Project $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --pushdown $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol hdfs $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol webhdfs $EXTRA"
 }
 hdfs_check() {
     local EXTRA=$1
@@ -46,18 +45,18 @@ s3_tblPart() {
     local WORKERS="--workers $1"
     local EXTRA="$2"
 
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblPartS3 $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblPartS3 --s3Filter --s3Project $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblPartS3 --s3Select $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --s3Filter --s3Project $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart --pushdown $EXTRA"
 }
 s3_tbl() {
     local WORKERS="--workers $1"
     local EXTRA=$2
 
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "--test tblFile $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblS3 $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblS3 --s3Filter --s3Project $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "$WORKERS --test tblS3 --s3Select $EXTRA"
+    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "--ds spark --protocol file $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --s3Filter --s3Project $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --pushdown $EXTRA"
 }
 s3() {
     local EXTRA=$1
@@ -65,6 +64,10 @@ s3() {
     #s3_tblPart 1 $EXTRA
     s3_tblPart 4 $EXTRA
     s3_tbl 1 "-p 1 $EXTRA"
+}
+s3_short() {
+    local EXTRA=$1
+    s3_tblPart 4 "$EXTRA"
 }
 if [ "$1" == "hdfscheck" ]; then
   hdfs_check "--check"
@@ -76,6 +79,8 @@ elif [ "$1" == "s3check" ]; then
   s3 "--check"
 elif [ "$1" == "s3perf" ]; then
   s3 ""
+elif [ "$1" == "s3short" ]; then
+  s3_short ""
 elif [ "$1" == "all" ]; then
   hdfs ""
   hdfs "--check"

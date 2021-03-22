@@ -93,13 +93,13 @@ Run query with no pushdown
 
 ```
 cd benchmark/tpch
-./run_tpch.sh -n 6 --test tblDikeHdfs
+./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs
 ```
 
 Run query with pushdown enabled.
 
 ```
-./run_tpch.sh -n 6 --test tblDikeHdfs --s3Select
+./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs --pushdown
 ```
 
 Test of spark with S3 server (dikeCS)
@@ -117,12 +117,12 @@ Run query with no pushdown
 
 ```
 cd benchmark/tpch
-./run_tpch.sh -n 6 --test tblS3
+./run_tpch.sh -t 6 -ds ndp --protocol s3
 ```
 
 Run query with pushdown enabled.
 
 ```
-./run_tpch.sh -n 6 --test tblS3 --s3Select
+./run_tpch.sh -t 6 -ds ndp --protocol s3 --pushdown
 ```
 
