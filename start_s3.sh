@@ -9,5 +9,4 @@ if [ ! -d data ]; then
 fi
 
 cd dikeCS
-./run_dikeCS.sh 
-
+./start.sh
