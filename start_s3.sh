@@ -1,12 +1,8 @@
 #! /bin/bash
 
-cd spark
-./docker/restart_spark.sh
-cd ..
-
 if [ ! -d data ]; then
-  ./init_tpch.sh
+  ./init_tpch.sh || (echo "*** failed int of tpch $?" ; exit 1)
 fi
 
 cd dikeCS
-./start.sh
+./start.sh || (echo "*** failed int of dikeCS $?" ; exit 1)

@@ -52,11 +52,6 @@ git submodule update --recursive --progress
 # git submodule update dikeCS pushdown-datasource
 
 docker network create dike-net
-
-cd dikeHDFS
-git submodule init
-git submodule update --recursive --progress
-
 ```
 
 Build
@@ -74,55 +69,43 @@ In case you want to delete all the artifacts.
 ./clean.sh
 ```
 
-Test of spark with HDFS NDP server (dikeHDFS)
-==========================================
-First, bring up the Spark and the HDFS server dockers.
+Demo test of NDP
+======================
+
+First, bring up all the server code (hdfs, s3, spark)
 
 ```
-./run_hdfs.sh
-```
-Then, in a separate window initialize the tpch database in HDFS.
-
-```
-cd dikeHDFS
-./run_init_tpch.sh ../data
-cd ..
+./start.sh
 ```
 
-Run query with no pushdown
+HDFS Test:  Run Spark TPC-H query with no pushdown
 
 ```
 cd benchmark/tpch
 ./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs
 ```
 
-Run query with pushdown enabled.
+HDFS Test: Run spark TPC-H query with pushdown enabled.
 
 ```
 ./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs --pushdown
 ```
 
-Test of spark with S3 server (dikeCS)
-==========================================
-First, bring up the Spark and the S3 server dockers.  This step also initializes the tpch database in S3.
-
-
-```
-./run_s3.sh
-```
-
-Then, in a separate window run the test:
-
-Run query with no pushdown
+S3 Test: Run Spark TPC-H query with no pushdown
 
 ```
 cd benchmark/tpch
 ./run_tpch.sh -t 6 -ds ndp --protocol s3
 ```
 
-Run query with pushdown enabled.
+S3 Test: Run Spark TPC-H query with pushdown enabled.
 
 ```
 ./run_tpch.sh -t 6 -ds ndp --protocol s3 --pushdown
 ```
 
+Finally, bring down the servers.
+
+```
+./stop.sh
+```
