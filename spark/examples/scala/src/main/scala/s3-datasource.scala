@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.datasource.tests
 
 import java.lang.RuntimeException
@@ -19,6 +35,10 @@ import scala.reflect.runtime.universe._
 
 import org.apache.spark.sql.Row
 
+/** A set of experiments for our S3 datasource functionality.
+ *  The purpose of this is to have a test we can experiment with.
+ *  You will see examples of commented out experiments below.
+ */
 object DatasourceS3Tests {
   def checkRowResult(expected: String, received: String) {
     checkResult(expected, received)
@@ -29,57 +49,6 @@ object DatasourceS3Tests {
       throw new RuntimeException("expected: != received: ")
     }
     println("RESULT: " + expected)
-  }
-
-
-
-  def hadoopS3ConnectorExample(args: Array[String]) { 
-    if (args.length == 0) {
-        println("missing arg for s3 ip addr") 
-        System.exit(1)
-    }
-    val s3IpAddr = args(0)
-  
-    val schema = new StructType()
-       .add("i",IntegerType,true)
-       .add("j",IntegerType,true)
-       .add("k",IntegerType,true)
-    val sparkSession = SparkSession.builder
-      .master("local[2]")
-      .appName("example")
-      .getOrCreate()
-
-    sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.access.key", "admin")
-    sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.secret.key", "admin123")
-    sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.endpoint", 
-                                                s"""http://$s3IpAddr:9000""")
-    sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.path.style.access", "true")
-    sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.impl", 
-                                        "org.apache.hadoop.fs.s3a.S3AFileSystem")
-
-    // sparkSession.sparkContext.setLogLevel("TRACE")
-
-    import sparkSession.implicits._
-
-    var start = System.currentTimeMillis()
-    val df = sparkSession.read
-      //.schema(schema)
-      .options(Map("delimiter"->",","header"->"true","inferSchema"->"true"))
-      .option("quote", "\"")
-      .csv("s3a://tpch-test/lineitem.csv")
-      .repartition(1)
-      //.csv("s3a://spark-test/ints.csv")
-      
-    println("count is: " + df.count())
-    var end = System.currentTimeMillis()
-
-    var seconds = (end - start) / 1000.0
-    println("Count Time " + seconds)
-    start = System.currentTimeMillis()
-    df.show()
-    end = System.currentTimeMillis()
-    seconds = (end - start) / 1000.0
-    println("Show Time " + seconds)
   }
 
   def integerExample(args: Array[String]) { 
@@ -221,92 +190,7 @@ object DatasourceS3Tests {
     //df.groupBy("j").agg(count($"i")).show()
     sparkSession.stop()
   }
-  def peopleExample(args: Array[String]) { 
-    if (args.length == 0) {
-        println("missing arg for s3 ip addr") 
-        System.exit(1)
-    }
-    val s3IpAddr = args(0)
-  
-    val schema = new StructType()
-       .add("id",IntegerType,true)
-       .add("name",StringType,true)
-       .add("age",IntegerType,true)
-       .add("city",StringType,true)
-    val sparkSession = SparkSession.builder
-      .master("local[2]")
-      .appName("example")
-      .config("spark.datasource.pushdown.endpoint", s"""http://$s3IpAddr:9000""")
-      .config("spark.datasource.pushdown.accessKey", "admin")
-      .config("spark.datasource.pushdown.secretKey", "admin123")
-      .getOrCreate()
-    // sparkSession.sparkContext.setLogLevel("TRACE")
-
-    import sparkSession.implicits._
-
-    val df = sparkSession.read
-      .format("com.github.datasource")
-      .schema(schema)
-      .option("format", "csv")
-      .load("s3a://spark-test/s3_data.tbl")
-    df.show()
-    //df.agg(count($"id")).show()
-    //df.groupBy($"city").agg(count($"id")).show()
-    //df.groupBy($"city").agg(sum($"age")).show()
-    //df.filter("id > 3 OR age > 40").show()
-    if (false) {
-      df.select("id", "name").show()
-      df.filter("id > 3 OR age > 40").show()
-      df.select("id", "name").filter("id > 3 OR age > 40").show()
-      df.select("id", "city").filter("id > 3 OR age > 40").show()
-      df.select("id", "age").filter("id > 3 OR age > 40").show()
-      df.select("name", "age").filter("id > 3 OR age > 40").show()
-      df.select("name", "city").filter("id > 3 OR age > 40").show()
-      df.select("age", "city").filter("id > 3 OR age > 40").show()
-    }
-    df.agg(count("*").as("cnt")).show()
-    //df.groupBy($"city").agg(count("*").as("cnt")).show()
-    //df.groupBy($"city").agg(avg($"age"),count("*").as("cnt")).show()
-    // df.filter("id > 3 OR age > 40").select("id", "name").show()
-    //df.filter("id > 0 AND age > 40").show()
-
-    if (false) {
-      df.filter("id != 0").show()
-      df.filter("(id != 0) AND (age != 63)").show()
-      df.filter("id > 0").filter("age > 40").show()
-      df.select(avg("age"), max("age"), min("age")).show()
-      val count = df.filter("id > 3").filter("age > 40").count()
-      println("count is: " + count)
-      // df.select(df("id"),df("city"),df("id")).filter(col("name").like("jim")).filter("age > 40").show()
-    }
-    if (false) {
-      df.write.option("header", true).format("csv").save("/build/s3_data.csv")
-      df.write.option("header", true).format("json").save("/build/s3_data.json")
-      df.write.option("header", true).format("parquet").save("/build/s3_data.parquet")
-    }
-    if (false) {
-      val dfj = sparkSession.read
-        .format("org.apache.spark.sql.execution.datasources.v2.s3")
-        .schema(schema)
-        .option("format", "json")
-        .load("s3a://spark-test/s3_data.json")
-        dfj.show()
-    }
-    if (false) {
-      val dfp = sparkSession.read
-        .format("org.apache.spark.sql.execution.datasources.v2.s3")
-        .schema(schema)
-        .option("format", "parquet")
-        .load("s3a://spark-test/s3_data.parquet")
-    dfp.show()
-    }
-    sparkSession.stop()
-  }
-
   def main(args: Array[String]) { 
-    //hadoopS3ConnectorExample(args)
     integerExample(args)
-    //lineItemExample(args)
-    //peopleExample(args)
   }
 }
