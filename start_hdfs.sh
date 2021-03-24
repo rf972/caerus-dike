@@ -5,7 +5,7 @@ if [ ! -d data ]; then
 fi
 
 pushd dikeHDFS
-./hadoop/start.sh bin/start-hadoop.sh || (echo "*** failed start of hadoop $?" ; exit 1)
+./start_server.sh || (echo "*** failed start of hadoop $?" ; exit 1)
 
 echo "Waiting for hadoop to start"
 

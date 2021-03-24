@@ -3,6 +3,7 @@ set -e
 
 git submodule init
 git submodule update --recursive --progress
+
 docker network create dike-net | true
 
 printf "\nBuilding Spark\n"
@@ -11,11 +12,11 @@ cd spark
 cd ..
 printf "\nBuilding Spark complete\n"
 
-printf "\nBuilding hdfs\n"
+printf "\nBuilding dikeHDFS\n"
 cd dikeHDFS
-./build.sh || (echo "*** benchmark build failed with $?" ; exit 1)
+./build.sh || (echo "*** dikeHDFS build failed with $?" ; exit 1)
 cd ..
-printf "\nBuilding benchmark complete\n"
+printf "\nBuilding dikeHDFS complete\n"
 
 printf "\nBuilding dikeCS\n"
 cd dikeCS
@@ -36,5 +37,3 @@ cd ../../
 printf "\nBuilding tpch complete\n"
 
 printf "\nBuild of ndp complete\n"
-
-
