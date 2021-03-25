@@ -8,12 +8,12 @@ fi
 if [ ! -d $DATA_DIR ]; then
   mkdir $DATA_DIR
 fi
-cp ../../minio/data/tpch-test/*.tbl* $DATA_DIR
+cp ../../data/tpch-test/*.tbl* $DATA_DIR
 ./run_tpch.sh --test init 
 STATUS=$?
 if [ $STATUS -eq 0 ];then
   echo "TPCH init Successful"
-  DEST_DIR=../../minio/data/tpch-test-csv
+  DEST_DIR=../../data/tpch-test-csv
   if [ ! -d $DEST_DIR ]; then
     mkdir $DEST_DIR
   fi
