@@ -24,8 +24,6 @@ class testRunner:
                             help="launch meld inline when files differ")
         parser.add_argument("--terse", action="store_true",
                             help="only report differences")
-        parser.add_argument("--spark", action="store_true", default=False,
-                            help="Run diff of Spark dataframes")
         parser.add_argument("--results", "-r",
                             default="../../spark/build/tpch-results/latest/",
                             help="Results directory\n"
@@ -80,9 +78,9 @@ class testRunner:
 
     def getTestPath(self, test, rootPath):
         if test < 10:
-            testName = "Q0" + str(test) + "." + self._args.format
+            testName = "Q0" + str(test)
         else:
-            testName = "Q" + str(test) + "." + self._args.format
+            testName = "Q" + str(test)
         path = rootPath + os.path.sep + testName 
         return path
 
@@ -113,6 +111,8 @@ class testRunner:
                 index += 1
                 if rc != 0:
                     diffFileList.append(baseFile)
+            print(baseFileList)
+            print(diffFileList)
             # We allow the baseline directory to have multiple possible matches.
             # the one file we are comparing against (compFilePath), must match one of these.
             # Thus, if they all disagree, then none matched.
@@ -134,43 +134,13 @@ class testRunner:
             else:
                 # If there was no file, then we skipped it.
                 self._skipCount += 1
-    def setupSpark(self):
-
-    val sparkSession = SparkSession.builder
-    .master("local[2]")
-    .appName("example")
-    .getOrCreate()
-
-    def sparkDiff(self, baseRootPath, compareRoot, testList):
-        for test in testList:
-            basePath = self.getTestPath(test, baseRootPath)
-            comparePath = self.getTestPath(test, compareRoot)
-
-            val baseDf = spark.read.format(self._args.format).load(basePath)
-            val compareDf = spark.read.format(self._args.format).load(comparePath)
-
-            differences = df.unionAll(df1).except(df.intersect(df1)).count
-            if differences != 0:
-                println(s"Found differences for: ${basePath} and ${comparePath}")
-                baseDf.show()
-                compareDf.show()
 
     def run(self):
         self.parseArgs()
 
         if self._args.compare:
-            if self._args.spark:
-                self.sparkDiff(self._args.baseline,
-                               self._args.compare, self._testList)
-            else:
-              self.runDiff(self._args.baseline,
-                           self._args.compare, self._testList)
-        elif self._args.spark:
-            dirList = glob.glob(self._args.results + os.path.sep + "*")
-            #print(dirList)
-            for resultRootDir in dirList:
-                self.sparkDiff(self._args.baseline,
-                               resultRootDir, self._testList)
+            self.runDiff(self._args.baseline,
+                         self._args.compare, self._testList)
         else:
             dirList = glob.glob(self._args.results + os.path.sep + "*")
             #print(dirList)
