@@ -78,30 +78,10 @@ First, bring up all the server code (hdfs, s3, spark)
 ./start.sh
 ```
 
-HDFS Test:  Run Spark TPC-H query with no pushdown
+Next, run the demo script, and follow the prompts.
 
 ```
-cd benchmark/tpch
-./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs
-```
-
-HDFS Test: Run spark TPC-H query with pushdown enabled.
-
-```
-./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs --pushdown
-```
-
-S3 Test: Run Spark TPC-H query with no pushdown
-
-```
-cd benchmark/tpch
-./run_tpch.sh -t 6 -ds ndp --protocol s3
-```
-
-S3 Test: Run Spark TPC-H query with pushdown enabled.
-
-```
-./run_tpch.sh -t 6 -ds ndp --protocol s3 --pushdown
+demo.sh
 ```
 
 Finally, bring down the servers.
