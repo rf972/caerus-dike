@@ -81,7 +81,7 @@ First, bring up all the server code (hdfs, s3, spark)
 Next, run the demo script, and follow the prompts.
 
 ```
-demo.sh
+./demo.sh
 ```
 
 Finally, bring down the servers.
