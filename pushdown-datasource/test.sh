@@ -11,9 +11,14 @@ pushd ../dikeCS
 ./start.sh
 popd
 pushd ../dikeHDFS
-./hadoop/start.sh bin/start-hadoop.sh
+../dikeHDFS/start_server.sh
+# Wait for hdfs to start before we disable safe mode.
+# this allows writes to hdfs within the 20 seconds after starting.
+sleep 2
+../dikeHDFS/disable_safe_mode.sh
 popd
 
+echo "Starting pushdown-datasource test"
 # Bring in environment including ${ROOT_DIR} etc.
 source ../spark/docker/setup.sh
 
