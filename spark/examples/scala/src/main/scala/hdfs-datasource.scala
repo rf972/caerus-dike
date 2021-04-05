@@ -14,122 +14,139 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package com.github.datasource.tests
 
+import java.io.{BufferedWriter, OutputStreamWriter}
 import java.lang.RuntimeException
-import org.apache.spark.Partition
-import org.apache.spark.sql.{SaveMode, SparkSession}
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.functions._
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkConf
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.count
-import org.apache.spark.sql.functions.sum
-import org.apache.spark.sql.functions.avg
-import org.apache.spark.sql.functions.udf
-import org.scalatest.Assertions._
-import org.apache.spark.sql.catalyst.ScalaReflection
-import org.apache.spark.sql.{Dataset, Row}
-import scala.reflect.runtime.universe._
-import org.apache.spark.sql.Row
+import java.net.URI
+import java.nio.charset.StandardCharsets
 
+import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.FSDataOutputStream
+import org.apache.hadoop.fs.Path
+import org.slf4j.LoggerFactory
+
+import org.apache.spark.Partition
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
 
 /** A set of experiments for our hdfs datasource functionality.
  *  The purpose of this is to have a test we can experiment with.
  *  You will see examples of commented out experiments below.
  */
 object DatasourceHdfsTests {
+  val disablePushdown = false
+  protected val logger = LoggerFactory.getLogger(getClass)
 
-  def integerHdfsExample(args: Array[String]) { 
-    if (args.length == 0) {
-        println("missing arg for s3 ip addr") 
-        System.exit(1)
-    }
-    val s3IpAddr = args(0)
-  
-    val schema = new StructType()
-       .add("i",IntegerType,true)
-       .add("j",IntegerType,true)
-       .add("k",IntegerType,true)
-    val sparkSession = SparkSession.builder
+  protected val sparkSession = SparkSession.builder
       .master("local[2]")
       .appName("example")
       .getOrCreate()
+  def integerHdfsExample(args: Array[String]) {
+    val host = if (args.length == 0) { "dikehdfs" } else { args(0) }
+
+    val schema = new StructType()
+       .add("i", IntegerType, true)
+       .add("j", IntegerType, true)
+       .add("k", IntegerType, true)
     sparkSession.sparkContext.setLogLevel("INFO")
     import sparkSession.implicits._
 
-    /*val df = sparkSession.read
-      .format("com.github.datasource")
-      .schema(schema)
-      .option("format", "csv")
-      .option("DisableProcessor", "1")
-      .load("ndphdfs://dikehdfs/spark-test/ints.csv")
-    df.show()*/
-
+    // Example of reading a normal csv file from hdfs.
     val csvDF = sparkSession.read
         .format("csv")
         .schema(schema)
-        .load("webhdfs://dikehdfs/spark-test/ints.csv").show()
+        .load(s"webhdfs://${host}/integer-test-csv").show()
 
-    val df1 = sparkSession.read
+    val df1 = if (disablePushdown) {
+        // To disable any of the pushdown options, add in options as
+        // shown below.  These Disable options can be combined to disable
+        // some or all of the pushdowns.
+        sparkSession.read
+        .format("com.github.datasource")
+        .schema(schema)
+        .option("format", "tbl")
+        .option("DisableFilterPush", "")
+        .option("DisableProjectPush", "")
+        .option("DisableAggregatePush", "")
+        .load(s"ndphdfs://${host}/integer-test/ints.tbl")
+    } else {
+      // To read with the datasource, include the below options.
+      sparkSession.read
       .format("com.github.datasource")
       .schema(schema)
-      .option("format", "csv")
-      /*.option("DisableFilterPush", "1")
-      .option("DisableProjectPush", "1")
-      .option("DisableAggregatePush", "1")*/
-      .load("ndphdfs://dikehdfs/spark-test/ints.tbl")
+      .option("format", "tbl")
+      .load(s"ndphdfs://${host}/integer-test/ints.tbl")
+    }
     df1.createOrReplaceTempView("integers")
 
     df1.agg(countDistinct("j", "k"), countDistinct("i")).show()
-
-    /*import org.apache.spark.sql.customUdf._
-    val decrease = CustomUDF.register("udf { (x: Double, y: Double) => x * (1 - y) }")
-    println(decrease)
-    val customUdf = CustomUDF.findUDF(decrease)
-    println(customUdf)
-    df1.agg(sum(decrease($"i", $"j"))).show()*/
-
-
-    //df1.show()
-    //df1.select("i").filter("k == 1").show()
-    /*df1.agg(count("i"),count("j"),count("k")).show()
-    df1.agg(count("i"),count("j"),count("k")).explain(true)
-    df1.agg(count("i")).explain(true)
-    sparkSession.sql("SELECT count(k), k, sum(k * j), j, k FROM integers WHERE i > 1" +
-                     " GROUP BY j, k").show()
-    sparkSession.sql("SELECT k, sum(k * j), count(k), j, k FROM integers" +
-                     " GROUP BY j, k").show()
-    df1.agg(count($"j").as("c_count"))
-       .sort($"c_count".desc).show()
-    sparkSession.sql("SELECT count(k) as c_count, k, sum(k + j), j, k FROM integers WHERE i > 1" +
-                     " GROUP BY j,k").show()
-    df1.groupBy($"k")
-       .agg(count($"k").as("c_count"))
-       .show()
-    df1.filter("k != 1").agg(countDistinct($"j").as("k_not_one")).show()
-    df1.select(countDistinct("j")).show()
-    df1.select(countDistinct("j")).explain(true)
-    df1.select(countDistinct("j", "k")).show()
-    df1.select(countDistinct("j", "k")).explain(true)
-    df1.select(countDistinct("i")).show()
-    df1.select(countDistinct("i", "j")).show()
-    println("count: " + df1.count())
-    println("distinct count: " + df1.distinct.count()) 
-    sparkSession.sql("SELECT count(k) as c_count, k, sum(k + j), j, k FROM integers WHERE i > 1" +
-                 " GROUP BY j,k").show()
-    sparkSession.sql("SELECT count(DISTINCT k) as c_count, k, sum(k + j), j, k FROM integers WHERE i > 1" +
-                 " GROUP BY j,k").show()
-    sparkSession.sql("SELECT count(DISTINCT k, j) as c_count, k, sum(k + j), j, k FROM integers WHERE i > 1" +
-                 " GROUP BY j,k").show()*/
-    //sparkSession.sql("SELECT count(DISTINCT k, j) FROM integers").show() //explain(true)
-    //df1.select(countDistinct("j","k")).show()
   }
 
   def main(args: Array[String]) {
+    val id = new InitData(sparkSession)
+    id.init()
     integerHdfsExample(args)
+  }
+}
+
+/** Allows for initializing the data in hdfs which is used by
+ *  the examples.
+ */
+class InitData(spark: SparkSession) {
+
+  /** Initializes a data frame with the sample data and
+   *  then writes this dataframe out to hdfs.
+   */
+  def initCsv(): Unit = {
+    val s = spark
+    import s.implicits._
+    val testDF = dataValues.toSeq.toDF("i", "j", "k")
+    testDF.select("*").repartition(1)
+      .write.mode("overwrite")
+      .format("csv")
+      // .option("header", "true")
+      .option("partitions", "1")
+      .save("hdfs://dikehdfs:9000/integer-test-csv")
+  }
+  private val dataValues = Seq((0, 5, 1), (1, 10, 2), (2, 5, 1),
+                               (3, 10, 2), (4, 5, 1), (5, 10, 2), (6, 5, 1))
+  /** Formats the data with | (pipe) separated format.
+   */
+  def getData(): String = {
+    val sb = new StringBuilder()
+    for (r <- dataValues) {
+      r.productIterator.map(_.asInstanceOf[Int])
+       .foreach(i => sb.append(i + "|"))
+      sb.append("\n")
+    }
+    sb.substring(0)
+  }
+  /** Writes the sample data out to hdfs.
+   */
+  def initTbl(): Unit = {
+    val conf = new Configuration();
+    val url = "hdfs://dikehdfs:9000"
+    conf.set("fs.defaultFS", url);
+
+    val fs = FileSystem.get(URI.create(url), conf);
+
+    val dataPath = new Path("/integer-test/ints.tbl");
+    val fsStrmData = fs.create(dataPath, true);
+    val bWriterData = new BufferedWriter(new OutputStreamWriter(fsStrmData,
+                                                                StandardCharsets.UTF_8));
+    bWriterData.write(getData);
+    bWriterData.close();
+    fs.close();
+  }
+  def init(): Unit = {
+    initTbl
+    initCsv
   }
 }
