@@ -7,7 +7,7 @@ import sys
 import glob
 import os
 
-class testRunner:
+class DiffTpch:
     def __init__(self):
       self._args = None
       self._successCount = 0
@@ -152,6 +152,6 @@ class testRunner:
         print("Failures:  {}".format(self._failureCount))
 
 if __name__ == "__main__":
-    r = testRunner()
+    r = DiffTpch()
 
     r.run()
