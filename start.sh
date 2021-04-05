@@ -1,7 +1,7 @@
 #! /bin/bash
 
 pushd spark
-./docker/restart_spark.sh || (echo "*** failed start of spark $?" ; exit 1)
+./start_spark.sh || (echo "*** failed start of spark $?" ; exit 1)
 popd
 
 ./start_hdfs.sh

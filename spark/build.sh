@@ -8,7 +8,7 @@ fi
 # Include the setup for our cached local directories. (.m2, .ivy2, etc)
 source docker/setup.sh
 
-if [[ "$1" == *"debug"* ]]; then
+if [[ "$1" == "-d" ]]; then
   echo "Starting build docker. $1"
   echo "run sbt to build"
   DOCKER_NAME="spark_build_$1"

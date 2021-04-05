@@ -16,7 +16,7 @@ if [ ! -f $S3JAR ]; then
 fi
 cp $S3JAR ./examples/scala/lib
 
-DIKECLIENTJAR=../dikeHDFS/client/dikeclient/target/dikeclient-1.0-jar-with-dependencies.jar
+DIKECLIENTJAR=../dikeHDFS/client/ndp-hdfs/target/ndp-hdfs-1.0.jar
 if [ ! -f $DIKECLIENTJAR ]; then
   echo "Please build dikeHDFS client ($DIKECLIENTJAR) before building spark examples"
   exit 1
@@ -27,7 +27,7 @@ echo "Copying $DIKECLIENTJAR"
 # Bring in environment including ${ROOT_DIR} etc.
 source docker/setup.sh
 
-if [[ "$1" == *"debug"* ]]; then
+if [[ "$1" == "-d" ]]; then
   echo "Starting build docker. $1"
   echo "run sbt to build"
   DOCKER_NAME="spark_build_$1"

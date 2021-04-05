@@ -6,7 +6,7 @@ import subprocess
 import sys
 import os
 
-class testRunner:
+class RunTpch:
     def __init__(self):
       self._args = None
       self._testList = []
@@ -14,8 +14,6 @@ class testRunner:
       self._testResults = []
       self._debug = False
       self._continueOnError = False
-      self._lastVethBytes = 0
-      self._veth = None
       self._startTime = time.time()
 
     def parseTestList(self):
@@ -47,8 +45,6 @@ class testRunner:
                                          description="Helper app for running tpch tests.\n")
         parser.add_argument("--debug", "-D", action="store_true",
                             help="enable debug output")
-        parser.add_argument("--veth", "-v", action="store_true",
-                            help="track veth bytes")
         parser.add_argument("--dry_run", action="store_true",
                             help="Do not run tests, just print tests to run.")
         parser.add_argument("--tests", "-t",
@@ -108,24 +104,10 @@ class testRunner:
         rc = process.poll()
         return rc, output_lines
 
-    def getBytes(self):
-        if True or self._veth == None:
-            cmd = "../../minio/nfs_server/vethfinder.sh | grep nfs"
-            output = subprocess.check_output(cmd, shell=True)
-            self._veth = str(output).split(":")[2].replace("\\n'", "")
-            #print("veth is: {}".format(self._veth))
-        cmd = "sudo cat /sys/class/net/{}/statistics/rx_bytes".format(self._veth)
-        bytes = int(subprocess.check_output(cmd, shell=True))
-        #print("bytes are: {}".format(bytes))
-        return bytes
-
     def restartAll(self):
         output = subprocess.check_output("cd ../../spark && ./docker/restart_spark_and_nfs.sh > /dev/null 2>&1", shell=True)
 
     def runCmd(self, cmd):
-        if self._args.veth:
-            self.restartAll()
-            self._lastVethBytes = self.getBytes()
         (rc, output) = self.runCommand(cmd, show_cmd=True, enable_stdout=False)
         if rc != 0:
             print("status {} from: {}".format(rc, cmd))
@@ -136,12 +118,8 @@ class testRunner:
             if "Test Results" in line:
                 lineNum += 1
             if lineNum == 4:
-                if self._args.veth:
-                    bytes = self.getBytes()
-                    self._testResults.append(line.rstrip() + ", " + str(bytes - self._lastVethBytes) + "\n")
-                else:
-                    print(line.rstrip())
-                    self._testResults.append(line)
+                print(line.rstrip())
+                self._testResults.append(line)
                 break
 
     def showResults(self):
@@ -175,6 +153,6 @@ class testRunner:
         self.runTests()
 
 if __name__ == "__main__":
-    r = testRunner()
+    r = RunTpch()
     r.run()
 
