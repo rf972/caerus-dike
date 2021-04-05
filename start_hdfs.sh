@@ -9,7 +9,8 @@ pushd dikeHDFS
 
 echo "Waiting for hadoop to start"
 
-sleep 10
+sleep 30
+./disable_safe_mode.sh
 ./run_init_tpch.sh ../data || (echo "*** failed init of tpch for hdfs $?" ; exit 1)
 popd
 
