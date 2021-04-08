@@ -1,0 +1,75 @@
+Caerus Dike
+This repository is released under Apache 2.0 license.
+
+It contains links to following components:
+Component Name: Datasource V2
+Link: https://github.com/futurewei-cloud/caerus-pushdown-datasource
+Description: This is our code released under Apache 2.0 license.
+External Dependencies:
+	Partially copied with modifications:
+	Name: Spark-select 
+	Link: https://github.com/minio/spark-select
+	License: Apache 2.0
+	Link to License: https://github.com/minio/spark-select/blob/master/LICENSE
+
+	Cloned with modifications:	
+	Name: TPCH-spark 
+	Link: https://github.com/ssavvides/tpch-spark
+	License: Apache 2.0
+	Link to License: https://github.com/ssavvides/tpch-spark/blob/master/LICENSE
+
+	Cloned without modifications:
+	Name: Spark (IBM branch)
+	Link: https://github.com/apache/spark
+	License: Apache 2.0
+	Link to License: https://github.com/apache/spark/blob/master/LICENSE
+
+Component Name: DikeCS
+Link: https://github.com/futurewei-cloud/caerus-dikeCS
+Description: This is our code released under Apache 2.0 license.
+External Dependencies:
+	Partially copied with modifications:
+	Name: SQLite
+        Link: https://github.com/sqlite/sqlite
+	License: SQLite
+        Link to License: https://github.com/sqlite/sqlite/blob/master/LICENSE.md
+            
+	Cloned without modifications:
+	Name: AWS C Common
+        Link: https://github.com/awslabs/aws-c-common
+	License: Apache 2.0
+        Link to License: https://github.com/peterpuhov-github/aws-c-common/blob/7870bf894035698aa280ba2bb6c8b46e083d7413/LICENSE
+
+	Cloned without modifications:
+	Name: AWS C Event Stream
+      	Link: https://github.com/awslabs/aws-c-event-stream
+	License: Apache 2.0
+        Link to License: https://github.com/awslabs/aws-c-event-stream/blob/main/LICENSE
+
+	Cloned without modifications:
+	Name: AWS checksums
+       	Link: https://github.com/awslabs/aws-checksums
+	License: Apache 2.0
+        Link to License: https://github.com/awslabs/aws-checksums/blob/main/LICENSE
+
+	Cloned without modifications:
+	Name: Poco
+       	Link: https://github.com/pocoproject/poco
+	License: Boost Software License version 1.0
+        Link to License: https://github.com/pocoproject/poco/blob/master/LICENSE
+            
+Component Name: DikeHDFS
+Link: https://github.com/futurewei-cloud/caerus-dikeHDFS
+Description: This is our code released under Apache 2.0 license.
+External Dependencies:
+	Cloned with modifications, copied with modifications:
+	Name: Hadoop, and HDFS WebHDFS client
+       	Link: https://github.com/apache/hadoop
+	License: Apache 2.0
+        Link to License: https://github.com/peterpuhov-github/hadoop/blob/51ba055c0dfc315d8170e62dfdf07d329773184a/LICENSE.txt
+
+	Cloned without modifications:
+	Name: Poco
+       	Link: https://github.com/pocoproject/poco
+	License: Boost Software License version 1.0
+        Link to License: https://github.com/pocoproject/poco/blob/master/LICENSE
