@@ -19,16 +19,16 @@ External Dependencies:
 	Link to License: https://github.com/ssavvides/tpch-spark/blob/master/LICENSE
 
 	Cloned without modifications:
-	Name: Spark (IBM branch)
-	Link: https://github.com/apache/spark
+	Name: Spark (huaxingao branch)
+	Link: https://github.com/huaxingao/spark/tree/pushdown
 	License: Apache 2.0
-	Link to License: https://github.com/apache/spark/blob/master/LICENSE
+	Link to License: https://github.com/huaxingao/spark/blob/pushdown/LICENSE
 
 Component Name: DikeCS
 Link: https://github.com/futurewei-cloud/caerus-dikeCS
 Description: This is our code released under Apache 2.0 license.
 External Dependencies:
-	Partially copied with modifications:
+	Cloned without modifications:
 	Name: SQLite
         Link: https://github.com/sqlite/sqlite
 	License: SQLite
@@ -38,7 +38,7 @@ External Dependencies:
 	Name: AWS C Common
         Link: https://github.com/awslabs/aws-c-common
 	License: Apache 2.0
-        Link to License: https://github.com/peterpuhov-github/aws-c-common/blob/7870bf894035698aa280ba2bb6c8b46e083d7413/LICENSE
+        Link to License: https://github.com/awslabs/aws-c-common/blob/main/LICENSE
 
 	Cloned without modifications:
 	Name: AWS C Event Stream
@@ -62,11 +62,11 @@ Component Name: DikeHDFS
 Link: https://github.com/futurewei-cloud/caerus-dikeHDFS
 Description: This is our code released under Apache 2.0 license.
 External Dependencies:
-	Cloned with modifications, copied with modifications:
-	Name: Hadoop, and HDFS WebHDFS client
-       	Link: https://github.com/apache/hadoop
-	License: Apache 2.0
-        Link to License: https://github.com/peterpuhov-github/hadoop/blob/51ba055c0dfc315d8170e62dfdf07d329773184a/LICENSE.txt
+	Single file copied with modifications:
+        Name: NDP HDFS filesystem
+        Link: https://github.com/apache/hadoop/blob/trunk/hadoop-hdfs-project/hadoop-hdfs-client/src/main/java/org/apache/hadoop/hdfs/web/WebHdfsFileSystem.java
+        License: Apache 2.0
+        Link to License: https://github.com/apache/hadoop/blob/trunk/LICENSE.txt
 
 	Cloned without modifications:
 	Name: Poco
