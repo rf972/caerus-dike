@@ -111,8 +111,8 @@ class DiffTpch:
                 index += 1
                 if rc != 0:
                     diffFileList.append(baseFile)
-            print(baseFileList)
-            print(diffFileList)
+            #print(baseFileList)
+            #print(diffFileList)
             # We allow the baseline directory to have multiple possible matches.
             # the one file we are comparing against (compFilePath), must match one of these.
             # Thus, if they all disagree, then none matched.
