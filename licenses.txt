@@ -3,7 +3,7 @@ This repository is released under Apache 2.0 license.
 
 It contains links to following components:
 Component Name: Datasource V2
-Link: https://github.com/futurewei-cloud/caerus-pushdown-datasource
+Link: https://github.com/open-infrastructure-labs/caerus-pushdown-datasource
 Description: This is our code released under Apache 2.0 license.
 External Dependencies:
 	Partially copied with modifications:
@@ -25,7 +25,7 @@ External Dependencies:
 	Link to License: https://github.com/huaxingao/spark/blob/pushdown/LICENSE
 
 Component Name: DikeCS
-Link: https://github.com/futurewei-cloud/caerus-dikeCS
+Link: https://github.com/open-infrastructure-labs/caerus-dikeCS
 Description: This is our code released under Apache 2.0 license.
 External Dependencies:
 	Cloned without modifications:
@@ -59,7 +59,7 @@ External Dependencies:
         Link to License: https://github.com/pocoproject/poco/blob/master/LICENSE
             
 Component Name: DikeHDFS
-Link: https://github.com/futurewei-cloud/caerus-dikeHDFS
+Link: https://github.com/open-infrastructure-labs/caerus-dikeHDFS
 Description: This is our code released under Apache 2.0 license.
 External Dependencies:
 	Single file copied with modifications:

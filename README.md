@@ -44,7 +44,7 @@ Setup
 =====
 
 ```bash
-git git clone https://github.com/futurewei-cloud/caerus-dike.git
+git git clone https://github.com/open-infrastructure-labs/caerus-dike.git
 cd caerus-dike
 git submodule init
 git submodule update --recursive --progress
