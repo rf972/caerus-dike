@@ -4,17 +4,17 @@
 	branch = pushdown
 [submodule "benchmark/tpch/tpch-spark"]
 	path = benchmark/tpch/tpch-spark
-	url = https://github.com/futurewei-cloud/caerus-tpch-spark.git
+	url = https://github.com/open-infrastructure-labs/caerus-tpch-spark.git
 	branch = master
 [submodule "pushdown-datasource"]
 	path = pushdown-datasource/pushdown-datasource
-	url = https://github.com/futurewei-cloud/caerus-pushdown-datasource.git
+	url = https://github.com/open-infrastructure-labs/caerus-pushdown-datasource.git
 	branch = master
 [submodule "dikeCS"]
 	path = dikeCS
-	url = https://github.com/futurewei-cloud/caerus-dikeCS.git
+	url = https://github.com/open-infrastructure-labs/caerus-dikeCS.git
 	branch = master
 [submodule "dikeHDFS"]
 	path = dikeHDFS
-	url = https://github.com/futurewei-cloud/caerus-dikeHDFS.git
+	url = https://github.com/open-infrastructure-labs/caerus-dikeHDFS.git
 	branch = main
