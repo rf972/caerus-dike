@@ -5,11 +5,7 @@ pushd spark
 popd
 
 pushd dikeHDFS
-./hadoop/stop.sh 
-popd
-
-pushd dikeCS
-./stop.sh
+./stop_server.sh 
 popd
 
 printf "\nAll containers stopped successfully\n"
