@@ -1,6 +1,11 @@
 #! /bin/bash
 
 set -e
+
+echo "Setting up permissions for minio"
+docker exec -it dikehdfs bin/hdfs dfs -chmod -R 777 /
+docker exec -it dikehdfs bin/hdfs dfs -ls /
+
 printf "\nStarting minio S3 gateway in detached mode ...\n"
 DAEMONIZE="-d=true"
 DOCKER_CMD="docker run --rm=true ${DAEMONIZE} \
