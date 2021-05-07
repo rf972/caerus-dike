@@ -16,16 +16,15 @@ hdfs_baseline() {
 hdfs_all() {
     local WORKERS="--workers $1"
     local EXTRA="$2"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --s3Filter $EXTRA"
-    #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --s3Filter --s3Project $EXTRA"
+#   ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --pushProject $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --pushFilter --pushProject $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol ndphdfs --pushdown $EXTRA"
     #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol hdfs $EXTRA"
     #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol webhdfs $EXTRA"
 }
 hdfs_check() {
     local EXTRA=$1
-    hdfs_all 1 "-p 1 $EXTRA"
     hdfs_all 1 "$EXTRA"
     hdfs_all 4 "$EXTRA"
 }
@@ -47,8 +46,8 @@ s3_filePart() {
     local EXTRA="$*"
 
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart --s3Project $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart --s3Filter --s3Project $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart --pushProject $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart --pushFilter --pushProject $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --filePart --pushdown $EXTRA"
 }
 s3_file() {
@@ -58,15 +57,15 @@ s3_file() {
 
     #./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "--ds spark --protocol file $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --s3Project $EXTRA"
-    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --s3Filter --s3Project $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --pushProject $EXTRA"
+    ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --pushFilter --pushProject $EXTRA"
     ./run_tpch.py $WORKERS $TESTS $EXTRA_DEFAULT -a "-ds ndp --protocol s3 --pushdown $EXTRA"
 }
 s3() {
     local EXTRA="$*"
     echo $EXTRA
-    s3_filePart 1 $EXTRA
-    s3_filePart 4 $EXTRA
+    #s3_filePart 1 $EXTRA
+    #s3_filePart 4 $EXTRA
     s3_file 1 $EXTRA
 }
 s3_short() {
@@ -79,8 +78,10 @@ elif [ "$1" == "hdfsshort" ]; then
   hdfs_short ""
 elif [ "$1" == "hdfsperf" ]; then
   hdfs_perf ""
-elif [ "$1" == "s3minio" ]; then
+elif [ "$1" == "s3miniocheck" ]; then
   s3 "--options minio --format csv --check"
+elif [ "$1" == "s3minio" ]; then
+  s3 "--options minio --format csv"
 elif [ "$1" == "s3check" ]; then
   s3 "--check"
 elif [ "$1" == "s3perf" ]; then
