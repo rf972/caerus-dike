@@ -11,19 +11,25 @@ if [ ! -d $SPARK_JAR_DIR ]; then
   exit 1
 fi
 cp $SPARK_JAR_DIR/*spark*.jar tpch-spark/lib
-S3JAR=../../pushdown-datasource/pushdown-datasource/target/scala-2.12/pushdown-datasource_2.12-0.1.0.jar
 
+S3JAR=../../pushdown-datasource/pushdown-datasource/target/scala-2.12/pushdown-datasource_2.12-0.1.0.jar
 if [ ! -f $S3JAR ]; then
   echo "Please build pushdown-datasource ($S3JAR) before building tpch-spark"
   exit 1
 fi
 cp $S3JAR tpch-spark/lib
 
+MACROSJAR=../../spark/build/downloads/spark-sql-macros_2.12.10_0.1.0-SNAPSHOT.jar
+if [ ! -f $MACROSJAR ]; then
+  echo "spark-sql-macros jar missing. Please build spark before building tpch-spark"
+  exit 1
+fi
+cp $MACROSJAR tpch-spark/lib
+
 # Bring in environment including ${ROOT_DIR} etc.
 source ../../spark/docker/setup.sh
 
-if [ "$1" == "debug" ]; then
-  echo "Debugging"
+if [ "$1" == "-d" ]; then
   shift
   docker run --rm -it --name tpch_build_debug \
     --mount type=bind,source="$(pwd)"/../tpch,target=/tpch \

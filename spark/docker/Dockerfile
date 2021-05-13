@@ -66,11 +66,6 @@ RUN apt-get -q install -y sudo
 FROM builder_base as builder
 LABEL version="1.0"
 
-ADD build.sh /build.sh
-RUN chmod +x /build.sh
-ENTRYPOINT ["/build.sh"]
-CMD ["spark"]
-
 ####
 #### Spark run docker stage.
 ####
