@@ -6,6 +6,5 @@ pushd spark
 popd
 
 ./start_hdfs.sh
-./start_s3.sh
 
 printf "\nSuccessfully started all servers.\n"
