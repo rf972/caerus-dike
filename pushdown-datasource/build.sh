@@ -29,10 +29,8 @@ cp $DIKECLIENTJAR pushdown-datasource/lib
 source ../spark/docker/setup.sh
 
 if [ "$#" -gt 0 ]; then
-  if [ "$1" == "debug" ]; then
-    echo "Debugging"
+  if [ "$1" == "-d" ]; then
     shift
-    echo "build with:   sbt"
     docker run --rm -it --name pushdown-datasource_build_debug \
       --network dike-net \
       --mount type=bind,source="$(pwd)"/../pushdown-datasource,target=/pushdown-datasource \

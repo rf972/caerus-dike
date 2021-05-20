@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ ! -d ../data/spark-test ]; then
-  mkdir ../data/spark-test
-  cp pushdown-datasource/ints.tbl ../data/spark-test
-  cp pushdown-datasource/ints.schema ../data/spark-test
-fi
-
 echo "Starting S3 and hdfs servers"
 pushd ../dikeCS
 ./start.sh
@@ -14,8 +8,10 @@ pushd ../dikeHDFS
 ../dikeHDFS/start_server.sh
 # Wait for hdfs to start before we disable safe mode.
 # this allows writes to hdfs within the 20 seconds after starting.
-sleep 2
-../dikeHDFS/disable_safe_mode.sh
+echo "Waiting for hadoop to start..."
+sleep 30
+echo "Disabling safe mode."
+docker exec -it dikehdfs bin/hdfs dfsadmin -safemode leave
 popd
 
 echo "Starting pushdown-datasource test"
@@ -36,9 +32,6 @@ docker run --rm -it --name pushdown_datasource_build \
   spark-build-${USER_NAME}
 
 echo "Stopping S3 and hdfs servers"
-pushd ../dikeCS
-./stop.sh
-popd
-pushd ../dikeHDFS/hadoop
-./stop.sh
+pushd ../dikeHDFS
+./stop_server.sh
 popd
