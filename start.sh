@@ -1,8 +1,8 @@
 #! /bin/bash
 
-mkdir ./data || true
+mkdir ./data 2>&1 > /dev/null || true
 pushd spark
-./start_spark.sh || (echo "*** failed start of spark $?" ; exit 1)
+./start.sh || (echo "*** failed start of spark $?" ; exit 1)
 popd
 
 ./start_hdfs.sh

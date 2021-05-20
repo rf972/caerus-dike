@@ -1,7 +1,7 @@
 #! /bin/bash
 
 pushd spark
-./stop_spark.sh
+./stop.sh
 popd
 
 pushd dikeHDFS

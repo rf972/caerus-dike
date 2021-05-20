@@ -1,9 +1,25 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 FROM ubuntu:20.04 as builder_base
 LABEL version="1.0"
 LABEL maintainer="Robert Foley <robfoley972@gmail.com>"
 
 RUN apt-get update \
- && apt-get install -y locales \
+ && apt-get install -y locales sudo\
  && dpkg-reconfigure -f noninteractive locales \
  && locale-gen en_US.UTF-8 \
  && /usr/sbin/update-locale LANG=en_US.UTF-8 \
@@ -59,6 +75,7 @@ ENV echo "export PYSPARK_PYTHON=/usr/bin/python3" >> ~/.profile
 RUN apt-get -q install -y sudo
 # Configure maven to save artifacts under build
 
+WORKDIR $SPARK_HOME
 
 ####
 #### Spark build docker stage.
@@ -72,5 +89,8 @@ LABEL version="1.0"
 FROM builder_base as run
 LABEL version="1.0"
 
-WORKDIR $SPARK_HOME
-CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
+COPY entry.sh /usr/local/bin/entry.sh
+RUN chmod a+x /usr/local/bin/entry.sh
+
+ENTRYPOINT ["/usr/local/bin/entry.sh"]
+
