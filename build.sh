@@ -18,12 +18,6 @@ cd dikeHDFS
 cd ..
 printf "\nBuilding dikeHDFS complete\n"
 
-printf "\nBuilding dikeCS\n"
-cd dikeCS
-./build.sh || (echo "*** dikeCS build failed with $?" ; exit 1)
-cd ..
-printf "\nBuilding dikeCS complete\n"
-
 printf "\nBuilding pushdown-datasource\n"
 cd pushdown-datasource
 ./build.sh || (echo "*** pushdown-datasource build failed with $?" ; exit 1)

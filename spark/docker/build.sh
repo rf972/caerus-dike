@@ -1,81 +1,109 @@
 #!/bin/bash
 
-set -e
-#set -x
-echo $1
-
-if [ "$1" == "plugin" ]; then
-    echo "Building plugin"
-    cd /spark-select
-    sbt --ivy /build/ivy compile
-    sbt --ivy /build/ivy package
-    exit $?
-fi
-if [ "$1" == "incremental" ]; then
-    echo "Building spark incrementally with sbt"
-    cd /spark
-    build/sbt package
-    exit $?
-fi
-
-# Start fresh, so remove the spark home directory.
-rm -rf $SPARK_HOME
-
-# Build Spark
-cd $SPARK_SRC
-
-# Only build spark if it was requested, since it takes so long.
-if [ "$1" == "spark" ]; then
-  echo "Building spark"
-  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true 
-  ./dev/make-distribution.sh --name custom-spark --pip --tgz
-fi
-
-if [ ! -d $SPARK_BUILD ]; then
-  echo "Creating Build Directory"
-  mkdir $SPARK_BUILD
-fi
-
-if [ ! -d $SPARK_BUILD/spark-events ]; then
-  mkdir $SPARK_BUILD/spark-events
-fi
-
-# Install Spark.
-# Extract our built package into our install directory.
-echo "Extracting $SPARK_PACKAGE.tgz -> $SPARK_HOME"
-sudo tar -xzf $SPARK_SRC/spark-*SNAPSHOT*.tgz -C $SPARK_BUILD \
- && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME
-
-# Download jar dependencies needed for using S3
-# We do this to avoid using the --packages argument to spark-submit.
-# Instead we will use --jars /build/extra_jars/*
-# This avoids the extra time to run ivy for all dependencies.
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-SPARK_DOWNLOADS=${SPARK_BUILD}/downloads
-if [ ! -d $SPARK_DOWNLOADS ]; then
-  echo "Creating Downloads Directory"
-  mkdir $SPARK_DOWNLOADS
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+ROOT_DIR=$(pwd)
+
+DOCKER_DIR=${ROOT_DIR}
+DOCKER_FILE="${DOCKER_DIR}/Dockerfile"
+
+CPU_ARCH=$(echo "$MACHTYPE" | cut -d- -f1)
+
+USER_NAME=${SUDO_USER:=$USER}
+USER_ID=$(id -u "${USER_NAME}")
+
+if [ "$(uname -s)" = "Darwin" ]; then
+  GROUP_ID=100
 fi
-cd $SPARK_DOWNLOADS
-if [ ! -f "aws-java-sdk.zip" ]; then
-    echo "Downloading aws-java-sdk.zip.  Please be patient."
-    wget -nv http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip
-    wget -nv https://repo1.maven.org/maven2/org/apache/commons/commons-csv/1.8/commons-csv-1.8.jar
-    mkdir $SPARK_BUILD/extra_jars || true
-    cp ./commons-csv*.jar $SPARK_BUILD/extra_jars
-else
-    echo "Using existing aws-java-sdk.zip"
+
+if [ "$(uname -s)" = "Linux" ]; then
+  GROUP_ID=$(id -g "${USER_NAME}")
+  # man docker-run
+  # When using SELinux, mounted directories may not be accessible
+  # to the container. To work around this, with Docker prior to 1.7
+  # one needs to run the "chcon -Rt svirt_sandbox_file_t" command on
+  # the directories. With Docker 1.7 and later the z mount option
+  # does this automatically.
+  if command -v selinuxenabled >/dev/null && selinuxenabled; then
+    DCKR_VER=$(docker -v|
+    awk '$1 == "Docker" && $2 == "version" {split($3,ver,".");print ver[1]"."ver[2]}')
+    DCKR_MAJ=${DCKR_VER%.*}
+    DCKR_MIN=${DCKR_VER#*.}
+    if [ "${DCKR_MAJ}" -eq 1 ] && [ "${DCKR_MIN}" -ge 7 ] ||
+        [ "${DCKR_MAJ}" -gt 1 ]; then
+      V_OPTS=:z
+    else
+      for d in "${PWD}" "${HOME}/.m2"; do
+        ctx=$(stat --printf='%C' "$d"|cut -d':' -f3)
+        if [ "$ctx" != svirt_sandbox_file_t ] && [ "$ctx" != container_file_t ]; then
+          printf 'INFO: SELinux is enabled.\n'
+          printf '\tMounted %s may not be accessible to the container.\n' "$d"
+          printf 'INFO: If so, on the host, run the following command:\n'
+          printf '\t# chcon -Rt svirt_sandbox_file_t %s\n' "$d"
+        fi
+      done
+    fi
+  fi
 fi
+echo "User id is: $USER_ID"
+echo "Group id is: $GROUP_ID"
 
-unzip -n -q aws-java-sdk.zip \
-  && cp ./aws-java-sdk-*/third-party/lib/*.jar $SPARK_BUILD/extra_jars \
-  && cp ./aws-java-sdk-*/lib/aws*.jar $SPARK_BUILD/extra_jars \
-  && rm -rf ./aws-java-sdk-*
+docker build -f Dockerfile --target builder -t spark_build .
+echo "Done building spark_build docker"
 
-if [ ! -f "h2-1.4.200.jar" ]; then
-    echo "downloading h2-1.4.200.jar"
-    wget -nv https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
-fi	
+docker build -f Dockerfile -t spark_run .
+echo "Done building spark_run docker"
 
+# Set the home directory in the Docker container.
+DOCKER_HOME_DIR=${DOCKER_HOME_DIR:-/home/${USER_NAME}}
 
+docker build -t "spark-build-${USER_NAME}" - <<UserSpecificDocker
+FROM spark_build
+RUN rm -f /var/log/faillog /var/log/lastlog
+RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME}
+RUN useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME} -d "${DOCKER_HOME_DIR}"
+RUN echo "${USER_NAME} ALL=NOPASSWD: ALL" > "/etc/sudoers.d/spark-build-${USER_ID}"
+ENV HOME "${DOCKER_HOME_DIR}"
 
+USER ${USER_NAME}
+RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+RUN cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+RUN chmod 0600 ~/.ssh/authorized_keys
+
+EXPOSE 22
+
+UserSpecificDocker
+echo "Done building spark-build-${USER_NAME}"
+
+docker build -t "spark-run-${USER_NAME}" - <<UserSpecificDocker
+FROM spark_run
+RUN rm -f /var/log/faillog /var/log/lastlog
+RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME}
+RUN useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME} -d "${DOCKER_HOME_DIR}"
+RUN echo "${USER_NAME} ALL=NOPASSWD: ALL" > "/etc/sudoers.d/spark-run-${USER_ID}"
+ENV HOME "${DOCKER_HOME_DIR}"
+
+USER ${USER_NAME}
+RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+RUN cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+RUN chmod 0600 ~/.ssh/authorized_keys
+
+EXPOSE 22
+
+UserSpecificDocker
+echo "Done building spark-run-${USER_NAME}"
+
+echo "Done building dockers"
