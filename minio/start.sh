@@ -6,10 +6,13 @@ echo "Setting up permissions for minio"
 docker exec -it dikehdfs bin/hdfs dfs -chmod -R 777 /
 docker exec -it dikehdfs bin/hdfs dfs -ls /
 
+USER_NAME=${SUDO_USER:=$USER}
+USER_ID=$(id -u "${USER_NAME}")
+
 printf "\nStarting minio S3 gateway in detached mode ...\n"
 DAEMONIZE="-d=true"
 DOCKER_CMD="docker run --rm=true ${DAEMONIZE} \
-            -e \"MINIO_ROOT_USER=admin\" \
+            -e \"MINIO_ROOT_USER=${USER}\" \
             -e \"MINIO_ROOT_PASSWORD=admin123\" \
             --name minioserver --hostname minioserver \
             --network dike-net \

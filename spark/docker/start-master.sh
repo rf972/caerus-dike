@@ -45,6 +45,9 @@ DOCKER_RUN="docker run ${DOCKER_IT} --rm \
   -v ${ROOT_DIR}/volume/status:/opt/volume/status \
   -v ${ROOT_DIR}/volume/logs:/opt/volume/logs \
   -v ${ROOT_DIR}/bin/:${DOCKER_HOME_DIR}/bin \
+  -e "AWS_ACCESS_KEY_ID=${USER_NAME}" \
+  -e "AWS_SECRET_ACCESS_KEY=admin123" \
+  -e "AWS_EC2_METADATA_DISABLED=true" \
   -e RUNNING_MODE=${RUNNING_MODE} \
   -u ${USER_ID} \
   spark-run-${USER_NAME} ${CMD}"
