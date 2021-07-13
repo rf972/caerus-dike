@@ -15,6 +15,7 @@ class RunTpch:
       self._debug = False
       self._continueOnError = False
       self._startTime = time.time()
+      self._test_failures = 0
 
     def parseTestList(self):
         testItems = self._args.tests.split(",")
@@ -110,11 +111,19 @@ class RunTpch:
     def runCmd(self, cmd):
         (rc, output) = self.runCommand(cmd, show_cmd=True, enable_stdout=False)
         if rc != 0:
-            print("status {} from: {}".format(rc, cmd))
+            self._test_failures += 1
+            failure = "test failed with status {} cmd {}".format(rc, cmd)
+            self._testResults.append(failure)
+            print(failure)
         lineNum = 0
         for line in output:
             if lineNum > 0:
                 lineNum += 1
+            if rc == 0 and (("TPCH Failed" in line) or ("FAILED" in line)):
+                self._test_failures += 1
+                failure = "test failed cmd: {}".format(cmd)
+                print(failure)
+                self._testResults.append(failure)
             if "Test Results" in line:
                 lineNum += 1
             if lineNum == 4:
@@ -144,8 +153,11 @@ class RunTpch:
             for t in self._testList:
                 cmd = "./run_tpch.sh -w {} -t {} {}".format(w, t, self._args.args)
                 self.runCmd(cmd)
+        print("")
         self.showResults()
         self.displayElapsed()
+        if (self._test_failures > 0):
+            print("test failures: {}".format(self._test_failures))
 
     def run(self):
         self.parseArgs()
