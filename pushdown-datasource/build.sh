@@ -31,7 +31,7 @@ source ../spark/docker/setup.sh
 if [ "$#" -gt 0 ]; then
   if [ "$1" == "-d" ]; then
     shift
-    docker run --rm -it --name pushdown-datasource_build_debug \
+    docker run --rm -it --name pushdown-datasource-build-debug \
       --network dike-net \
       --mount type=bind,source="$(pwd)"/../pushdown-datasource,target=/pushdown-datasource \
       -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
