@@ -53,11 +53,9 @@ else
   --conf "spark.jars.ivy=/build/ivy" \
   --conf "spark.driver.maxResultSize=20g" \
   --conf "spark.sql.broadcastTimeout=10000000" \
-  --conf "spark.driver.memory=2g" \
-  --conf "spark.executor.memory=2g" \
+  --conf "spark.driver.memory=8g" \
+  --conf "spark.executor.memory=8g" \
   --conf "spark.eventLog.enabled=true" \
-  --conf "spark.memory.offHeap.enabled=true" \
-  --conf "spark.memory.offHeap.size=2g" \
   --conf "spark.eventLog.dir=/build/spark-events" \
   --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.2.0/jars/*:/examples/scala/target/scala-2.12/" \
   --packages com.github.scopt:scopt_2.12:4.0.0-RC2,ch.cern.sparkmeasure:spark-measure_2.12:0.17 \
@@ -80,4 +78,5 @@ if [ $STATUS -eq 0 ];then
   echo "TPCH Successful"
 else
   echo "TPCH Failed"
+  exit $STATUS
 fi
