@@ -108,9 +108,11 @@ def main(cmd_args=sys.argv, skip=False):
         for i in range(0, file_md.num_row_groups):
             rg_md = get_row_group_metadata(cmd_args.file, i)
             print("\n # Row Group {}\n".format(i), rg_md)
-            for c in range(0, rg_md.num_columns):
-                col_md = get_row_group_col_metadata(cmd_args.file, i, c)
-                print("\n Column {}\n".format(c), col_md)
+            if cmd_args.verbose:
+                for c in range(0, rg_md.num_columns):
+                    col_md = get_row_group_col_metadata(cmd_args.file, i, c)
+                    print("\n Column {}\n".format(c), col_md)
+        
         print_key_value_metadata(cmd_args.file)
 
 def init_args():
@@ -156,6 +158,9 @@ def init_args():
 
     group.add_argument("-q", "--query", default="",
                        help="run a query on a dataframe")
+
+    group.add_argument("-v", "--verbose", default=False, action="store_true",
+                       help="more detailed output")
 
     parser.add_argument("file",
                         type=argparse.FileType('rb'),
