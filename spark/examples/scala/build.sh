@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPARK_JAR_DIR=./build/spark-3.2.0/jars/
+SPARK_JAR_DIR=./build/spark-3.3.0/jars/
 if [ ! -d $SPARK_JAR_DIR ]; then
   echo "Please build spark ($SPARK_JAR_DIR) before building spark examples"
   exit 1
@@ -48,7 +48,7 @@ if [[ "$1" == "-d" ]]; then
     "spark-build-${USER_NAME}"
 else
   echo "starting incremental build with sbt"
-  
+
   docker run --rm -it --name spark-incremental \
     --network dike-net \
     --mount type=bind,source="$(pwd)"/spark,target=/spark \
