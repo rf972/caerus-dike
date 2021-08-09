@@ -19,11 +19,10 @@ fi
 if [ $RUNNING_MODE = "interactive" ]; then
   DOCKER_IT="-i -t"
 fi
-
+#  --cpuset-cpus="16-19" \
 DOCKER_RUN="docker run ${DOCKER_IT} --rm -p 8081:8081 \
   --expose 7012 --expose 7013 --expose 7014 --expose 7015 --expose 8881 \
   --name sparkworker \
-  --cpuset-cpus="16-19" \
   --network dike-net \
   -e SPARK_CONF_DIR=/conf \
       -e SPARK_WORKER_CORES=2 \
@@ -46,13 +45,13 @@ DOCKER_RUN="docker run ${DOCKER_IT} --rm -p 8081:8081 \
   -u ${USER_ID} \
   spark-run-${USER_NAME} ${CMD}"
 
-    
+
 if [ $RUNNING_MODE = "interactive" ]; then
   eval "${DOCKER_RUN}"
 else
   eval "${DOCKER_RUN}" &
   while [ ! -f "${ROOT_DIR}/volume/status/SPARK_WORKER_STATE" ]; do
-    sleep 1  
+    sleep 1
   done
 
   cat "${ROOT_DIR}/volume/status/SPARK_WORKER_STATE"

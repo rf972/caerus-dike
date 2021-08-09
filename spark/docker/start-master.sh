@@ -20,12 +20,11 @@ fi
 if [ $RUNNING_MODE = "interactive" ]; then
   DOCKER_IT="-i -t"
 fi
-
+#  --cpuset-cpus="9-12" \
 DOCKER_RUN="docker run ${DOCKER_IT} --rm \
   -p 4040:4040 -p 6066:6066 -p 7077:7077 -p 8080:8080 -p 5005:5005 -p 18080:18080 \
   --expose 7001 --expose 7002 --expose 7003 --expose 7004 --expose 7005 --expose 7077 --expose 6066 \
   --name sparkmaster \
-  --cpuset-cpus="9-12" \
   --network dike-net \
   -e MASTER=spark://sparkmaster:7077 \
   -e SPARK_CONF_DIR=/conf \
@@ -58,7 +57,7 @@ if [ $RUNNING_MODE = "interactive" ]; then
 else
   eval "${DOCKER_RUN}" &
   while [ ! -f "${ROOT_DIR}/volume/status/SPARK_MASTER_STATE" ]; do
-    sleep 1  
+    sleep 1
   done
 
   cat "${ROOT_DIR}/volume/status/SPARK_MASTER_STATE"
