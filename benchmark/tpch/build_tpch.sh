@@ -5,7 +5,7 @@ fi
 if [ ! -d tpch-spark/build ]; then
   mkdir tpch-spark/build
 fi
-SPARK_JAR_DIR=../../spark/build/spark-3.2.0/jars/
+SPARK_JAR_DIR=../../spark/build/spark-3.3.0/jars/
 if [ ! -d $SPARK_JAR_DIR ]; then
   echo "Please build spark ($SPARK_JAR_DIR) before building tpch"
   exit 1

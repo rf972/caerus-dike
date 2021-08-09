@@ -39,7 +39,7 @@ if [ ${DEBUG} == "YES" ]; then
   --conf "spark.driver.maxResultSize=20g" \
   --conf "spark.driver.memory=2g" \
   --conf "spark.executor.memory=2g" \
-  --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.2.0/jars/*:/examples/scala/target/scala-2.12/ -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=172.21.0.3:5005" \
+  --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.3.0/jars/*:/examples/scala/target/scala-2.12/ -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=172.18.0.3:5005" \
   --packages com.github.scopt:scopt_2.12:4.0.0-RC2,ch.cern.sparkmeasure:spark-measure_2.12:0.17 \
   --jars /build/downloads/spark-sql-macros_2.12.10_0.1.0-SNAPSHOT.jar,/dikeHDFS/client/ndp-hdfs/target/ndp-hdfs-1.0.jar,/build/extra_jars/*,/pushdown-datasource/target/scala-2.12/pushdown-datasource_2.12-0.1.0.jar,/build/downloads/h2-1.4.200.jar \
   /tpch/tpch-spark/target/scala-2.12/spark-tpc-h-queries_2.12-1.0.jar $@ --workers ${WORKERS}
@@ -53,13 +53,13 @@ else
   --conf "spark.jars.ivy=/build/ivy" \
   --conf "spark.driver.maxResultSize=20g" \
   --conf "spark.sql.broadcastTimeout=10000000" \
-  --conf "spark.driver.memory=8g" \
-  --conf "spark.executor.memory=8g" \
+  --conf "spark.driver.memory=32g" \
+  --conf "spark.executor.memory=32g" \
   --conf "spark.eventLog.enabled=true" \
   --conf "spark.eventLog.dir=/build/spark-events" \
-  --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.2.0/jars/*:/examples/scala/target/scala-2.12/" \
+  --conf "spark.driver.extraJavaOptions=-classpath /conf/:/build/spark-3.3.0/jars/*:/examples/scala/target/scala-2.12/" \
   --packages com.github.scopt:scopt_2.12:4.0.0-RC2,ch.cern.sparkmeasure:spark-measure_2.12:0.17 \
-  --jars /build/downloads/spark-sql-macros_2.12.10_0.1.0-SNAPSHOT.jar,/dikeHDFS/client/ndp-hdfs/target/ndp-hdfs-1.0.jar,/build/extra_jars/*,/pushdown-datasource/target/scala-2.12/pushdown-datasource_2.12-0.1.0.jar,/build/downloads/h2-1.4.200.jar\
+  --jars /build/downloads/spark-sql-macros_2.12.10_0.1.0-SNAPSHOT.jar,/dikeHDFS/client/ndp-hdfs/target/ndp-hdfs-1.0.jar,/build/extra_jars/*,/pushdown-datasource/target/scala-2.12/pushdown-datasource_2.12-0.1.0.jar,/build/downloads/h2-1.4.200.jar \
   /tpch/tpch-spark/target/scala-2.12/spark-tpc-h-queries_2.12-1.0.jar $@ --workers ${WORKERS}
 fi
 

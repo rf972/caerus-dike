@@ -1,5 +1,5 @@
 #!/bin/bash
-SPARK_JAR_DIR=../spark/build/spark-3.2.0/jars/
+SPARK_JAR_DIR=../spark/build/spark-3.3.0/jars/
 if [ ! -d $SPARK_JAR_DIR ]; then
   echo "Please build spark before building pushdown-datasource"
   exit 1
@@ -13,9 +13,9 @@ fi
 cp $SPARK_JAR_DIR/*.jar pushdown-datasource/lib
 
 SPARK_TEST_JAR_DIR=../spark/spark/
-cp $SPARK_TEST_JAR_DIR/sql/core/target/spark-sql_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
-cp $SPARK_TEST_JAR_DIR/sql/catalyst/target/spark-catalyst_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
-cp $SPARK_TEST_JAR_DIR/core/target/spark-core_2.12-3.2.0-SNAPSHOT-tests.jar pushdown-datasource/lib
+cp $SPARK_TEST_JAR_DIR/sql/core/target/spark-sql_2.12-3.3.0-SNAPSHOT-tests.jar pushdown-datasource/lib
+cp $SPARK_TEST_JAR_DIR/sql/catalyst/target/spark-catalyst_2.12-3.3.0-SNAPSHOT-tests.jar pushdown-datasource/lib
+cp $SPARK_TEST_JAR_DIR/core/target/spark-core_2.12-3.3.0-SNAPSHOT-tests.jar pushdown-datasource/lib
 
 DIKECLIENTJAR=../dikeHDFS/client/ndp-hdfs/target/ndp-hdfs-1.0.jar
 
