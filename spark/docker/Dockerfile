@@ -39,7 +39,7 @@ RUN apt-get update \
     python3 python3-setuptools \
  && ln -s /usr/bin/python3 /usr/bin/python \
  && apt install -y python3-pip \
- && python3 -mpip install py4j \
+ && python3 -mpip install py4j pyarrow pandas \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -56,20 +56,21 @@ RUN apt-get update \
  && ln -s /usr/lib/jvm/java-8-openjdk-amd64/bin /usr/lib/jvm/bin
 
 # sbt
-RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list \
- && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 \
- && apt-get update \
- && apt-get install sbt
+RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list \
+&& echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list \
+&& curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add  \
+&& sudo apt-get update \
+&& sudo apt-get install sbt
 
 # Setup Spark Environment
-ENV SPARK_VERSION 3.2.0
+ENV SPARK_VERSION 3.3.0
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-SNAPSHOT-bin-custom-spark
 ENV SPARK_SRC /spark
 ENV SPARK_BUILD /build
 ENV SPARK_HOME ${SPARK_BUILD}/spark-${SPARK_VERSION}
-#ENV SPARK_DIST_CLASSPATH="$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/hdfs/lib/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/yarn/lib/*:$HADOOP_HOME/share/hadoop/yarn/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/tools/lib/*"
 ENV PATH $PATH:${SPARK_HOME}/bin
 ENV echo "export SPARK_HOME=/opt/spark" >> ~/.profile
+ENV echo "export SPARK_VERSION=$SPARK_VERSION" >> ~/.profile
 ENV echo "export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin" >> ~/.profile
 ENV echo "export PYSPARK_PYTHON=/usr/bin/python3" >> ~/.profile
 RUN apt-get -q install -y sudo

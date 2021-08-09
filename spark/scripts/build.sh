@@ -13,7 +13,7 @@ cd $SPARK_SRC
 # Only build spark if it was requested, since it takes so long.
 if [ "$1" == "spark" ]; then
   echo "Building spark"
-  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true 
+  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true
   ./dev/make-distribution.sh --name custom-spark --pip --tgz
 fi
 
@@ -29,7 +29,7 @@ fi
 # Install Spark.
 # Extract our built package into our install directory.
 echo "Extracting $SPARK_PACKAGE.tgz -> $SPARK_HOME"
-sudo tar -xzf $SPARK_SRC/spark-*SNAPSHOT*.tgz -C $SPARK_BUILD \
+sudo tar -xzf "$SPARK_SRC/$SPARK_PACKAGE.tgz" -C $SPARK_BUILD \
  && mv $SPARK_BUILD/$SPARK_PACKAGE $SPARK_HOME
 
 # Download jar dependencies needed for using S3
@@ -63,7 +63,7 @@ fi
 if [ ! -f "h2-1.4.200.jar" ]; then
     echo "downloading h2-1.4.200.jar"
     wget -nv https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
-fi	
+fi
 
 
 

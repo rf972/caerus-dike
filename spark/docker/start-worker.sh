@@ -23,6 +23,7 @@ fi
 DOCKER_RUN="docker run ${DOCKER_IT} --rm -p 8081:8081 \
   --expose 7012 --expose 7013 --expose 7014 --expose 7015 --expose 8881 \
   --name sparkworker \
+  --cpuset-cpus="16-19" \
   --network dike-net \
   -e SPARK_CONF_DIR=/conf \
       -e SPARK_WORKER_CORES=2 \

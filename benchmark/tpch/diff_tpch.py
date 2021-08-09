@@ -6,6 +6,7 @@ import subprocess
 import sys
 import glob
 import os
+import shutil
 
 class DiffTpch:
     def __init__(self):
@@ -22,6 +23,8 @@ class DiffTpch:
                             help="enable debug output")
         parser.add_argument("--meld", action="store_true",
                             help="launch meld inline when files differ")
+        parser.add_argument("--prompt_resolve", action="store_true",
+                            help="prompt to resolve difference by copying to baseline.")
         parser.add_argument("--terse", action="store_true",
                             help="only report differences")
         parser.add_argument("--results", "-r",
@@ -128,6 +131,11 @@ class DiffTpch:
                         subprocess.call("meld {} {}".format(baseFile, compareFile), shell=True)
                         print("meld {} {}".format(baseFile, compareFile))
                         #print("Result of diff {} {} was {}".format(d1File, compareFile, rc))
+                        if rc != 0 and self._args.prompt_resolve:
+                            resolve = input("resolve this difference? (y/n)")
+                            if resolve == 'y' or resolve == 'Y':
+                                print("Copy {} -> {}".format(compareFile, basePath))
+                                shutil.copy(compareFile, basePath)
             elif compareFile != None:
                 # They matched, keep track of it.
                 self._successCount += 1

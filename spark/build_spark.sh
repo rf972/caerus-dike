@@ -13,7 +13,7 @@ if [[ "$1" == "-d" ]]; then
   echo "run sbt to build"
   DOCKER_NAME="spark_build_debug"
   shift
-  
+
   docker run --rm -it --name $DOCKER_NAME \
     --network dike-net \
     --mount type=bind,source="$(pwd)"/spark,target=/spark \
@@ -27,9 +27,9 @@ if [[ "$1" == "-d" ]]; then
   -v "${ROOT_DIR}/build/.cache:${DOCKER_HOME_DIR}/.cache" \
   -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
   -u "${USER_ID}" \
-  "spark-build-${USER_NAME}" $@ 
+  "spark-build-${USER_NAME}" $@
 else
-  echo "Starting build for $@"	
+  echo "Starting build for $@"
   cd docker
   ./build.sh
   cd ..
@@ -45,5 +45,5 @@ else
   -v "${ROOT_DIR}/build/.cache:${DOCKER_HOME_DIR}/.cache" \
   -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
   -u "${USER_ID}" \
-  "spark-build-${USER_NAME}" /scripts/build.sh spark 
+  "spark-build-${USER_NAME}" /scripts/build.sh spark
 fi
