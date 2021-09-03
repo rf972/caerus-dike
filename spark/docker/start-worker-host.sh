@@ -5,7 +5,7 @@ source docker/setup.sh
 mkdir -p "${ROOT_DIR}/volume/logs"
 rm -f "${ROOT_DIR}/volume/logs/worker*.log"
 
-mkdir -p "${ROOT_DIR}/volume/worker/status"
+mkdir -p "${ROOT_DIR}/volume/status"
 rm -f "${ROOT_DIR}/volume/status/WORKER*"
 
 CMD="${DOCKER_HOME_DIR}/bin/start-worker-host.sh"
