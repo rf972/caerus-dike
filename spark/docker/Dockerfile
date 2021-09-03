@@ -35,7 +35,7 @@ ENV LC_ALL en_US.UTF-8
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
- && apt-get install -y wget curl unzip nano vim \
+ && apt-get install -y wget curl unzip nano vim htop iproute2 iputils-ping \
     python3 python3-setuptools \
  && ln -s /usr/bin/python3 /usr/bin/python \
  && apt install -y python3-pip \
@@ -63,8 +63,8 @@ RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /e
 && sudo apt-get install sbt
 
 # Setup Spark Environment
-ENV SPARK_VERSION 3.3.0
-ENV SPARK_PACKAGE spark-${SPARK_VERSION}-SNAPSHOT-bin-custom-spark
+ENV SPARK_VERSION 3.1.2
+ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-custom-spark
 ENV SPARK_SRC /spark
 ENV SPARK_BUILD /build
 ENV SPARK_HOME ${SPARK_BUILD}/spark-${SPARK_VERSION}
