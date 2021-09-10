@@ -1,6 +1,7 @@
 #!/bin/bash
-bin/spark-class org.apache.spark.deploy.master.Master > /opt/volume/logs/master.log 2>&1 &
-
+echo "master ip is: $SPARK_MASTER_HOST"
+./sbin/start-master.sh --ip $SPARK_MASTER_HOST --port 7077 > /opt/volume/logs/master.log 2>&1 &
+# --properties-file /conf/spark-defaults.conf
 echo "SPARK_MASTER_READY"
 echo "SPARK_MASTER_READY" > /opt/volume/status/SPARK_MASTER_STATE
 

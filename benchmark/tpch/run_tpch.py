@@ -30,16 +30,23 @@ class RunTpch:
                 self._testList.append(int(i))
 
     def parseWorkersList(self):
-        testItems = self._args.workers.split(",")
+        increment = self._args.workers.split("+")
+        if (len(increment) > 1):
+          inc = int(increment[1])
+        else:
+          inc = 1
+        #print("worker inc : {}".format(inc))
+        testItems = increment[0].split(",")
 
         for i in testItems:
             if "-" in i:
                 r = i.split("-")
                 if len(r) == 2:
-                    for t in range(int(r[0]), int(r[1]) + 1):
+                    for t in range(int(r[0]), int(r[1]) + 1, inc):
                         self._workersList.append(t)
             else:
                 self._workersList.append(int(i))
+        print("WorkerList {}".format(self._workersList))
 
     def parseArgs(self):
         parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
@@ -57,6 +64,8 @@ class RunTpch:
         parser.add_argument("--results", "-r", default="results.csv",
                             help="results file\n"
                             "ex. -r results.csv")
+        parser.add_argument("--loops", "-l", default="1",
+                            help="number of loops of tests to run")
         parser.add_argument("--args", "-a",
                             help="args to test\n"
                             'ex. -a "--test tblPartS3 -t 21 --s3Filter --s3Project"')
@@ -161,8 +170,10 @@ class RunTpch:
 
     def run(self):
         self.parseArgs()
-        
-        self.runTests()
+
+        loops = int(self._args.loops)
+        for loop in range(0, loops):
+          self.runTests()
 
 if __name__ == "__main__":
     r = RunTpch()

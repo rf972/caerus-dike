@@ -29,7 +29,6 @@ source docker/setup.sh
 
 if [[ "$1" == "-d" ]]; then
   echo "Starting build docker. $1"
-  echo "run sbt to build"
   DOCKER_NAME="spark_build_$1"
   shift
 

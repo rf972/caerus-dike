@@ -9,38 +9,33 @@ rm -f "${ROOT_DIR}/volume/logs/master*.log"
 mkdir -p "${ROOT_DIR}/volume/status"
 rm -f "${ROOT_DIR}/volume/status/MASTER*"
 
-CMD="${DOCKER_HOME_DIR}/bin/start-master.sh"
+CMD="sleep 365d"
 RUNNING_MODE="daemon"
 
-DOCKER_CMDS="$(cat spark.config | grep DOCKER_CMDS)"
+ADD_HOSTS="$(cat spark.config | grep add-host)"
 if [ "$#" -ge 1 ] ; then
-  ADD_HOSTS=$DOCKER_CMDS
+  ADD_HOSTS="$1"
 fi
-echo "Add Docker: $DOCKER_CMDS"
+echo "Add Hosts: $ADD_HOSTS"
 
-MASTER_IP="$(cat spark.config | grep MASTER_IP)"
-IFS='=' read -a IP_ARRAY <<< "$MASTER_IP"
-MASTER_IP=${IP_ARRAY[1]}
-echo "MASTER_IP: $MASTER_IP"
+LAUNCHER_IP="$(cat spark.config | grep LAUNCHER_IP)"
+IFS='=' read -a IP_ARRAY <<< "$LAUNCHER_IP"
+LAUNCHER_IP=${IP_ARRAY[1]}
+echo "LAUNCHER_IP: $LAUNCHER_IP"
 
 if [ $RUNNING_MODE = "interactive" ]; then
   DOCKER_IT="-i -t"
 fi
-
-echo "removing work and logs"
-rm -rf build/spark-3.1.2/work/
-rm -rf build/spark-3.1.2/logs/
-
 #  --cpuset-cpus="9-12" \
 DOCKER_RUN="docker run ${DOCKER_IT} --rm \
-  -p 4040:4040 -p 6066:6066 -p 7077:7077 -p 8080:8080 -p 5005:5005 -p 18080:18080 \
-  --expose 7001 --expose 7002 --expose 7003 --expose 7004 --expose 7005 --expose 7077 --expose 6066 \
-  --name sparkmaster \
-  --network dike-net --ip $MASTER_IP $DOCKER_CMDS \
-  -e MASTER=spark://$MASTER_IP:7077 \
+  -p 5006:5006 \
+  --name sparklauncher \
+  --network dike-net --ip ${LAUNCHER_IP} ${ADD_HOSTS} \
+  -e MASTER=spark://sparkmaster:7077 \
   -e SPARK_CONF_DIR=/conf \
-  -e SPARK_MASTER_HOST=$MASTER_IP \
   -e SPARK_PUBLIC_DNS=localhost \
+  -e SPARK_MASTER="spark://sparkmaster:7077" \
+  -e SPARK_DRIVER_HOST=${LAUNCHER_IP} \
   --mount type=bind,source=$(pwd)/spark,target=/spark \
   --mount type=bind,source=$(pwd)/build,target=/build \
   --mount type=bind,source=$(pwd)/examples,target=/examples \
