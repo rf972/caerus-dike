@@ -66,6 +66,8 @@ class RunTpch:
                             "ex. -r results.csv")
         parser.add_argument("--loops", "-l", default="1",
                             help="number of loops of tests to run")
+        parser.add_argument("--name", "-n", default="",
+                            help="name for test")
         parser.add_argument("--args", "-a",
                             help="args to test\n"
                             'ex. -a "--test tblPartS3 -t 21 --s3Filter --s3Project"')
@@ -92,8 +94,16 @@ class RunTpch:
             self.terminate(1)
         return rc, output
 
-    def runCommand(self, command, show_cmd=False, enable_stdout=True, no_capture=False):
+    def runCommand(self, command, show_cmd=False, enable_stdout=True, no_capture=False, log_file=""):
         output_lines = []
+        log_fd = None
+        if os.path.exists(self._args.results):
+            mode = "a"
+        else:
+            mode = "w"
+        if (log_file != ""):
+            print("opening {}".format(log_file))
+            log_fd = open(log_file, mode)
         if show_cmd or self._debug:
             print("{}: {} ".format(sys.argv[0], command))
         if self._args.dry_run:
@@ -110,15 +120,19 @@ class RunTpch:
                 break
             if output and enable_stdout:
                 self.print(str(output, 'utf-8').strip())
+            if output and log_fd:
+                log_fd.write(str(output, 'utf-8').strip() + "\n")
             output_lines.append(str(output, 'utf-8'))
+        if log_fd:
+            log_fd.close()
         rc = process.poll()
         return rc, output_lines
 
     def restartAll(self):
         output = subprocess.check_output("cd ../../spark && ./docker/restart_spark_and_nfs.sh > /dev/null 2>&1", shell=True)
 
-    def runCmd(self, cmd):
-        (rc, output) = self.runCommand(cmd, show_cmd=True, enable_stdout=False)
+    def runCmd(self, cmd, log_file=""):
+        (rc, output) = self.runCommand(cmd, show_cmd=True, enable_stdout=False, log_file=log_file)
         if rc != 0:
             self._test_failures += 1
             failure = "test failed with status {} cmd {}".format(rc, cmd)
@@ -158,9 +172,11 @@ class RunTpch:
         print("elapsed time: {:2}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds)))
 
     def runTests(self):
+        timestr = time.strftime("%Y%m%d-%H%M%S")
         for w in self._workersList:
             for t in self._testList:
                 cmd = "./run_tpch.sh -w {} -t {} {}".format(w, t, self._args.args)
+                #self.runCmd(cmd, "{}_test_{}_w{}_{}.txt".format(self._args.name, t, w, timestr))
                 self.runCmd(cmd)
         print("")
         self.showResults()

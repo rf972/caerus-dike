@@ -4,3 +4,5 @@
 
 
 ./run_tpch.py --workers 16 -t 1-22 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 3 --quiet" ; ./run_tpch.py --workers 16 -t 1-22 --args "-ds spark --protocol hdfs --format parquet --quiet"
+
+./run_tpch.py --workers 1,2,4,8,12,16,20,24,28,32 -t 14 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet"

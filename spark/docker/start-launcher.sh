@@ -12,11 +12,17 @@ rm -f "${ROOT_DIR}/volume/status/MASTER*"
 CMD="sleep 365d"
 RUNNING_MODE="daemon"
 
-ADD_HOSTS="$(cat spark.config | grep add-host)"
-if [ "$#" -ge 1 ] ; then
-  ADD_HOSTS="$1"
-fi
-echo "Add Hosts: $ADD_HOSTS"
+DOCKER_HOSTS="$(cat spark.config | grep DOCKER_HOSTS)"
+IFS='=' read -a IP_ARRAY <<< "$DOCKER_HOSTS"
+DOCKER_HOSTS=${IP_ARRAY[1]}
+HOSTS=""
+IFS=',' read -a IP_ARRAY <<< "$DOCKER_HOSTS"
+for i in "${IP_ARRAY[@]}"
+do
+  HOSTS="$HOSTS --add-host=$i"
+done
+DOCKER_HOSTS=$HOSTS
+echo "Docker Hosts: $DOCKER_HOSTS"
 
 LAUNCHER_IP="$(cat spark.config | grep LAUNCHER_IP)"
 IFS='=' read -a IP_ARRAY <<< "$LAUNCHER_IP"
@@ -30,7 +36,7 @@ fi
 DOCKER_RUN="docker run ${DOCKER_IT} --rm \
   -p 5006:5006 \
   --name sparklauncher \
-  --network dike-net --ip ${LAUNCHER_IP} ${ADD_HOSTS} \
+  --network dike-net --ip ${LAUNCHER_IP} ${DOCKER_HOSTS} \
   -e MASTER=spark://sparkmaster:7077 \
   -e SPARK_CONF_DIR=/conf \
   -e SPARK_PUBLIC_DNS=localhost \

@@ -32,7 +32,7 @@ if [ "$#" -gt 0 ]; then
   if [ "$1" == "-d" ]; then
     shift
     docker run --rm -it --name pushdown-datasource-build-debug \
-      --network dike-net \
+      --network host \
       --mount type=bind,source="$(pwd)"/../pushdown-datasource,target=/pushdown-datasource \
       -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
       -v "${ROOT_DIR}/build/.gnupg:${DOCKER_HOME_DIR}/.gnupg" \
