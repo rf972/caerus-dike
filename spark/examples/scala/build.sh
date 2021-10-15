@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPARK_JAR_DIR=./build/spark-3.3.0/jars/
+SPARK_JAR_DIR=./build/spark-3.1.2/jars/
 if [ ! -d $SPARK_JAR_DIR ]; then
   echo "Please build spark ($SPARK_JAR_DIR) before building spark examples"
   exit 1
@@ -29,7 +29,6 @@ source docker/setup.sh
 
 if [[ "$1" == "-d" ]]; then
   echo "Starting build docker. $1"
-  echo "run sbt to build"
   DOCKER_NAME="spark_build_$1"
   shift
 
