@@ -17,6 +17,12 @@ the test are all utilizing dockers.
 
 For more information, see the [Design Specification](doc/ndp_design.pdf)
 
+Branches
+==========
+The design spec above talks about v1 and v2 versions of our code.  <BR>
+The v1 version can be found in the **v1** branch.<BR>
+The v2 version is currently in the **master** branch.
+
 Components
 ===========
 
@@ -39,6 +45,7 @@ Components
         * to support a variety of testing modes such as selecting the
         pushdown used (with or without pushdown, project, filter, aggregate),
         selecting the number of partitions, or spark workers, etc.<BR><BR>
+
 
 Setup
 =====
