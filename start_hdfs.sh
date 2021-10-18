@@ -13,13 +13,14 @@ if [ ! -d data/tpch-test ]; then
   echo "Initialize tpch database."
   ./init_tpch.sh || (echo "*** failed int of tpch $?" ; exit 1)
 fi
-docker exec -it dikehdfs bin/hdfs dfs -ls /tpch-test-csv
+docker exec -it dikehdfs bin/hdfs dfs -ls /tpch-test-parquet
 CMDSTATUS=$?
 echo $CMDSTATUS
 if [ $CMDSTATUS -ne 0 ]; then
   pushd benchmark/tpch
-  echo "Initialize tpch CSV database in hdfs"
-  ./run_tpch.sh --mode initCsv --protocol hdfs || (echo "*** failed tpch init of CSV for hdfs $?" ; exit 1)
+  echo "Initialize tpch Parquet database in hdfs"
+  #./run_tpch.sh --mode initCsv --protocol hdfs || (echo "*** failed tpch init of CSV for hdfs $?" ; exit 1)
+  ./run_tpch.sh -l  --mode initParquet -ds spark --protocol hdfs || (echo "*** failed tpch init of Parquet for hdfs $?" ; exit 1)
   popd
 fi
 

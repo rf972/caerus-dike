@@ -1,25 +1,14 @@
 #!/bin/bash
 
 
-printf "\nNext Test: Spark TPC-H query with HDFS storage and with no pushdown\n"
-read -n 1 -s -r -p "Press any key to continue with test."
 cd benchmark/tpch
-./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs
-printf "\nTest Complete: Spark TPC-H query with HDFS storage and with no pushdown\n"
-
 printf "\nNext Test: Spark TPC-H query with HDFS storage and with pushdown enabled.\n"
 read -n 1 -s -r -p "Press any key to continue with test."
-./run_tpch.sh -t 6 -ds ndp --protocol ndphdfs --pushdown
+./run_tpch.sh -l -t 14 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2
 printf "\nTest Complete: Spark TPC-H query with HDFS storage and with pushdown enabled.\n"
 
-
-
-printf "\nNext Test: Spark TPC-H query with S3 storage and with no pushdown\n"
+printf "\nNext Test: Spark TPC-H query with HDFS storage (Spark only)\n"
 read -n 1 -s -r -p "Press any key to continue with test."
-./run_tpch.sh -t 6 -ds ndp --protocol s3
-printf "Test Complete: Spark TPC-H query with S3 storage and with no pushdown\n"
+./run_tpch.sh -l -t 14 -ds spark --protocol hdfs --format parquet
+printf "\nTest Complete: Spark TPC-H query with HDFS storage (Spark only)\n"
 
-printf "\nNext Test: Spark TPC-H query with S3 and with pushdown enabled.\n"
-read -n 1 -s -r -p "Press any key to continue with test."
-./run_tpch.sh -t 6 -ds ndp --protocol s3 --pushdown
-printf "\nTest Complete: Spark TPC-H query with S3 and with pushdown enabled.\n"
