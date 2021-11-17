@@ -176,8 +176,9 @@ class RunTpch:
         for w in self._workersList:
             for t in self._testList:
                 cmd = "./run_tpch.sh -w {} -t {} {}".format(w, t, self._args.args)
-                #self.runCmd(cmd, "{}_test_{}_w{}_{}.txt".format(self._args.name, t, w, timestr))
-                self.runCmd(cmd)
+                #self.runCmd(cmd, "logs/{}_test_{}_w{}_{}.txt".format(self._args.name, t, w, timestr))
+                self.runCmd(cmd, "logs/{}_test_{}_w{}.txt".format(self._args.name, t, w))
+                #self.runCmd(cmd)
         print("")
         self.showResults()
         self.displayElapsed()
