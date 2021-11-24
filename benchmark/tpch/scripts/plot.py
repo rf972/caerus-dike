@@ -10,9 +10,10 @@ import subprocess
 import sys
 import os
 
-class Convert:
+class Plot:
     def __init__(self):
       self._args = None
+      self._file_list = []
       self.parseArgs()
 
     def parseArgs(self):
@@ -22,9 +23,17 @@ class Convert:
                             help="enable debug output")
         parser.add_argument("--show", "-s", default=False,
                             help="show chart")
-        parser.add_argument("--file", "-i", required=True,
+        parser.add_argument("--file", "-f", required=True,
                             help="input file")
         self._args = parser.parse_args()
+        if ( not os.path.exists(self._args.file)):
+            sys.stderr.write("path does not exist [{}]".format(self._args.file))
+            exit(1)
+        if (os.path.isdir(self._args.file)):
+            self._files = \
+                [ f for f in os.listdir(self._args.file) if os.path.isfile(self._args.file + "/" + f)]
+        else:
+            self._files = self._args.file.split(",")
 
     def sumTransfers(row):
         return row['txbytes'] + row['rxbytes']
@@ -33,12 +42,10 @@ class Convert:
 
     def create_chart(self, file_name):
         df = pd.read_csv(file_name)
-        df['cumulative'] = df.apply(
-            lambda row: Convert.sumTransfers(row), axis=1)
-        df['txmb'] = df.apply(
-            lambda row: Convert.bytes_to_mb(row, "txbytes"), axis=1)
-        df['rxmb'] = df.apply(
-            lambda row: Convert.bytes_to_mb(row, "rxbytes"), axis=1)
+        print("file: {}".format(file_name))
+        #df['cumulative'] = df.apply(lambda row: Plot.sumTransfers(row), axis=1)
+        df['txmb'] = df.apply(lambda row: Plot.bytes_to_mb(row, "txbytes"), axis=1)
+        df['rxmb'] = df.apply(lambda row: Plot.bytes_to_mb(row, "rxbytes"), axis=1)
 
         plot_name = file_name.replace(".csv", "").replace("_", " ")
         fig, axs = plt.subplots(2)
@@ -78,14 +85,22 @@ class Convert:
             plt.show()
 
     def run(self):
-        files = self._args.file.split(",")
-        for f in files:
+        file_list = (f for f in self._files if ".csv" in f)
+        for f in file_list:
+            try:
+                num_lines = sum(1 for line in open(f))
+            except Exception:
+                print("not able to count lines in file {}".format(f))
+                num_lines = 0
+            if num_lines < 2:
+                print("file {} too small, skipping...".format(f))
+                continue
+            print("Plotting {}".format(f))
             self.create_chart(f)
 
 
 if __name__ == "__main__":
-    c = Convert()
-
+    c = Plot()
     c.run()
 
 

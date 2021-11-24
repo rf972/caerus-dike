@@ -1,11 +1,13 @@
 #!/bin/bash
+# Bring in environment including ${ROOT_DIR} etc.
+source ../../spark/docker/setup.sh
 if [ ! -d tpch-spark/lib ]; then
   mkdir tpch-spark/lib
 fi
 if [ ! -d tpch-spark/build ]; then
   mkdir tpch-spark/build
 fi
-SPARK_JAR_DIR=../../spark/build/spark-3.1.2/jars/
+SPARK_JAR_DIR="../../spark/build/spark-${SPARK_VERSION}/jars/"
 if [ ! -d $SPARK_JAR_DIR ]; then
   echo "Please build spark ($SPARK_JAR_DIR) before building tpch"
   exit 1
@@ -25,9 +27,6 @@ if [ ! -f $MACROSJAR ]; then
   exit 1
 fi
 cp $MACROSJAR tpch-spark/lib
-
-# Bring in environment including ${ROOT_DIR} etc.
-source ../../spark/docker/setup.sh
 
 if [ "$1" == "-d" ]; then
   shift
