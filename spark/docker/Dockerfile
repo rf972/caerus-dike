@@ -63,8 +63,10 @@ RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /e
 && sudo apt-get install sbt
 
 # Setup Spark Environment
-ENV SPARK_VERSION 3.1.2
+ENV SPARK_VERSION 3.2.0
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-custom-spark
+ENV SPARK_PACKAGE_DL spark-${SPARK_VERSION}-bin-hadoop2.7.tgz
+ENV SPARK_PACKAGE_URL https://downloads.apache.org/spark/spark-${SPARK_VERSION}/$SPARK_PACKAGE
 ENV SPARK_SRC /spark
 ENV SPARK_BUILD /build
 ENV SPARK_HOME ${SPARK_BUILD}/spark-${SPARK_VERSION}

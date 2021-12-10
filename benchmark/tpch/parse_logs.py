@@ -57,6 +57,7 @@ class ParseLogs:
         fields = line.split(" ")
         task = fields[6] if len(fields) > 6 else 0
         time = fields[0] + " " + fields[1]
+        #print(time + " " + line)
         sec = datetime.datetime.strptime(time, "%d/%m/%y %H:%M:%S.%f").timestamp()
         return (time, sec, task)
     def parse1(self, file):
@@ -70,12 +71,14 @@ class ParseLogs:
                 "Pushdown Rule Part2",
                 "Pushdown Rule Part3",
                 "Pushdown Rule Part4",
-                "Pushdown Rule HdfsOpScan",}
+                "Pushdown Rule HdfsOpScan",
+                "Pushdown test"}
         with open(file) as fd:
             index = 0
             start_str = ""
             end_str = ""
             start_times = {}
+            elapsed_times = {}
             overall_start = 0
             overall_end = 0
             rule_start = 0
@@ -87,10 +90,11 @@ class ParseLogs:
                         if "start" in line:
                           (time_str, rule_start, task) = self.getTime(line)
                           start_times[t] = rule_start
-                          print("Rule: " + line)
+                          #print("Start: [{}] {}".format(t, line))
                         if "end" in line:
                           (time_str, rule_end, task) = self.getTime(line)
-                          print("Rule time {} {}".format(line, rule_end - start_times[t]))
+                          elapsed_times[t] = rule_end - start_times[t]
+                          #print("End: [{}] elapsed sec {} {}".format(t, rule_end - start_times[t], line))
 
                 if "Pushdown Rule File" in line:
                     print("Rule: " + line)
@@ -101,8 +105,9 @@ class ParseLogs:
                     if start_str == "":
                         start_str = line
                         overall_start = start_sec
-                        if rule_start != 0:
-                            print("rule to start {} {}".format(time_str, start_sec - rule_end), end="\n")
+                        if "Pushdown test" in start_times:
+                            #print("test start to task start {} {}".format(time_str, start_sec - start_times["Pushdown test"]), end="\n")
+                            elapsed_times["pre-task"] = start_sec - start_times["Pushdown test"]
 
                     start_times[task] = start_sec
                 if "Finished task" in line and self._args.start in line:
@@ -113,15 +118,18 @@ class ParseLogs:
                     end_sec = datetime.datetime.strptime(end_time, "%d/%m/%y %H:%M:%S.%f").timestamp()
                     overall_end = end_sec
                     total_tasks += 1
-                    #print("{}, {}".format(task,
-                    #                      end_sec - start_times[task]), end="\n")
+                    # print("{}, {} {}".format(task,
+                    #                      end_sec - start_times[task], total_tasks), end="\n")
                 index += 1
             if (start_str == "" or end_str == ""):
                 print("Start or end not found")
                 exit(1)
-            print("last task was: {} total: {}".format(task, total_tasks))
-            print("total task time is {}".format(end_sec - overall_start))
-            print("total time is {}".format(end_sec - rule_start))
+            #print("total tasks: {}".format(total_tasks))
+            elapsed_times["task time"] = end_sec - overall_start
+            #print("task time {}".format(end_sec - overall_start))
+            print("{},{},{},{},{}".format(total_tasks,elapsed_times["pre-task"], elapsed_times["task time"],
+            (elapsed_times["Pushdown test"] - elapsed_times["pre-task"] - elapsed_times["task time"]),
+                                    elapsed_times["Pushdown test"]))
 
     def run(self):
         self.parseArgs()

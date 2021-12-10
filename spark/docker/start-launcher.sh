@@ -51,6 +51,7 @@ if [ ${START_LOCAL} == "YES" ]; then
   --mount type=bind,source=$(pwd)/../data,target=/tpch-data \
   --mount type=bind,source=$(pwd)/../dikeHDFS,target=/dikeHDFS \
   --mount type=bind,source=$(pwd)/../benchmark/tpch,target=/tpch \
+  --mount type=bind,source=$(pwd)/../pyNdp,target=/pyNdp \
   --mount type=bind,source=$(pwd)/../pushdown-datasource/pushdown-datasource,target=/pushdown-datasource \
   -v $(pwd)/conf/master:/conf  \
   -v ${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2 \

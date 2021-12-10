@@ -59,7 +59,7 @@ DOCKER_RUN="docker run ${DOCKER_IT} --rm -p 8081:8081 \
       -e SPARK_WORKER_IP=$WORKER_IP \
       -e SPARK_WORKER_WEBUI_PORT=8081 \
       -e SPARK_PUBLIC_DNS=localhost \
-      -e HDFS_PATH=localhost \
+      -e HDFS_PATH=dikehdfs \
   --mount type=bind,source="$(pwd)"/spark,target=/spark \
   --mount type=bind,source=$(pwd)/build,target=/build \
   -v ${ROOT_DIR}/conf/worker:/conf \

@@ -34,7 +34,7 @@ class DiffTpch:
         parser.add_argument("--format", "-f",
                             default="csv",
                             help="format of file, csv or parquet\n")
-        parser.add_argument("--baseline", "-b", 
+        parser.add_argument("--baseline", "-b",
                             default="../../spark/build/tpch-baseline",
                             help="baseline results directory to compare against\n"
                             "ex. -b ../../spark/build/tpch-baseline")
@@ -84,7 +84,7 @@ class DiffTpch:
             testName = "Q0" + str(test)
         else:
             testName = "Q" + str(test)
-        path = rootPath + os.path.sep + testName 
+        path = rootPath + os.path.sep + testName
         return path
 
     def runDiff(self, baseRootPath, compareRoot, testList):
@@ -108,7 +108,7 @@ class DiffTpch:
                         "/usr/bin/diff -q {} {} > /dev/null 2>&1".format(baseFile, compareFile), shell=True)
 
                 if not self._args.terse:
-                    print("{} {} {}".format(compareDirName, 
+                    print("{} {} {}".format(compareDirName,
                                             test,
                                             "same" if (rc == 0) else "[{}] DIFFER".format(index)))
                 index += 1
@@ -121,7 +121,10 @@ class DiffTpch:
             # Thus, if they all disagree, then none matched.
             if len(diffFileList) == len(baseFileList):
                 # No matches, keep track of it.
-                self._failureCount += 1
+                if len(diffFileList) == 0:
+                    self._skipCount += 1
+                else:
+                    self._failureCount += 1
                 for diffFile in diffFileList:
                     if self._args.terse:
                         print("{} Test: {} DIFFER".format(compareDirName, test))

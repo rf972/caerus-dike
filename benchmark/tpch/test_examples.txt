@@ -6,3 +6,41 @@
 ./run_tpch.py --workers 16 -t 1-22 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 3 --quiet" ; ./run_tpch.py --workers 16 -t 1-22 --args "-ds spark --protocol hdfs --format parquet --quiet"
 
 ./run_tpch.py --workers 1,2,4,8,12,16,20,24,28,32 -t 14 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet"
+
+./run_tpch.sh -w 16 -t 21 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --check
+./run_tpch.sh -w 16 -t 21 -ds spark --protocol hdfs --format parquet --check
+
+rm -rf /nvme-part/caerus/rf972-caerus-dike/dikeHDFS/data/tpch-results
+docker exec -it dikehdfs bin/hdfs dfs -rm -r /tpch-results
+./run_tpch.py --workers 16 -t 1-22 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --check"; ./run_tpch.py --workers 16 -t 1-22 --args "-ds spark --protocol hdfs --format parquet --check"
+docker exec -it dikehdfs bin/hdfs dfs -ls -R /tpch-results
+docker exec -it dikehdfs bin/hdfs dfs -get /tpch-results /data
+
+./diff_tpch.py --meld --baseline ~/caerus/tpch-baselines/10g/ --compare /nvme-part/caerus/rf972-caerus-dike/dikeHDFS/data/tpch-results/latest/spark-hdfs-parquet-Rule-W4/
+
+# Local validation
+./run_tpch.py -t 1-22 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 3 --check"
+
+# Cluster validation
+./run_tpch.py --workers 1 -t 14 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet --check"
+
+./run_tpch.py -t 1-22 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol file"
+./run_tpch.py -t 1-22 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol file --path tpch-test-parquet-1g --check"
+./run_tpch.sh -l -w 8 -t 18 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-1g --pushRule --compression ZSTD --compLevel 2 --outputLocation file --check
+
+for index in {1,2,4,8,12,16,20,24,28,32}; do ./parse_logs.py -f logs/ndp_loopback_test_14_w$index.txt -s "in stage 2.0"; done
+
+
+./run_tpch.py --name spark --workers 12 -t 14 --args "-ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g"
+
+./run_tpch.py --workers 1,2,4,8,12,16,20,24,28,32 -t 14 --name ndp --args "-ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g --pushRule --compression ZSTD --compLevel 2 --quiet"
+./run_tpch.py --workers 1,2,4,8,12,16,20,24,28,32 -t 14 --name spark --args "-ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g --quiet"
+
+
+./run_tpch.sh -w 8 -t 18 -ds spark --protocol hdfs --format parquet  --path tpch-test-parquet-100g --pushRule --compression ZSTD --compLevel 2 --quiet --bytesServer local,eno1
+
+# cluster validation
+./run_tpch.py -t 18 --args "-ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol hdfs --path tpch-test-parquet-1g --check"
+
+./run_tpch.py -t 18 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol file"
+./run_tpch.py -t 18 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol file --path tpch-test-parquet-1g --check"

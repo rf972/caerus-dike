@@ -1,7 +1,7 @@
 [submodule "spark"]
 	path = spark/spark
-	url = https://github.com/huaxingao/spark.git
-	branch = pushdown
+	url = https://github.com/apache/spark.git
+	branch = tags/v3.2.0
 [submodule "benchmark/tpch/tpch-spark"]
 	path = benchmark/tpch/tpch-spark
 	url = https://github.com/open-infrastructure-labs/caerus-tpch-spark.git
