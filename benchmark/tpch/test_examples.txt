@@ -44,3 +44,37 @@ for index in {1,2,4,8,12,16,20,24,28,32}; do ./parse_logs.py -f logs/ndp_loopbac
 
 ./run_tpch.py -t 18 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol file"
 ./run_tpch.py -t 18 --args "--local -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --quiet -ol file --path tpch-test-parquet-1g --check"
+
+export CORES=8
+./scripts/client.py 10.124.48.87 Spark_Q18_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 NDP_Q18_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q18_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18,2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q18_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18,2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+
+export CORES=32
+./scripts/client.py 10.124.48.87 Spark_Q18_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 NDP_Q18_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q18_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18,2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q18_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 18,2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+
+export CORES=8
+./scripts/client.py 10.124.48.87 Spark_Q14_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 NDP_Q14_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q14_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14,2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q14_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14,2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+
+export CORES=32
+./scripts/client.py 10.124.48.87 Spark_Q14_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 NDP_Q14_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+./scripts/client.py 10.124.48.87 Spark_Q14_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14,2 -ds spark --protocol hdfs --format parquet --path tpch-test-parquet-400g ;
+./scripts/client.py 10.124.48.87 NDP_Q14_Q2_$CORES_cores ; ./run_tpch.sh -w $CORES -t 14,2 -ds spark --protocol hdfs --format parquet --pushRule --compression ZSTD --compLevel 2 --path tpch-test-parquet-400g
+
+./run_tpch.sh -w 8 -t 14 -ds spark --protocol hdfs --format parquet --pushRule --path tpch-test-parquet-100g -ol hdfs --check | tee log.txt

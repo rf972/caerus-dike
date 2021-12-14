@@ -35,7 +35,7 @@ if [ "$1" != "spark" ]; then
   popd
 else
   echo "Building spark"
-  #rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true
+  rm $SPARK_SRC/spark-*SNAPSHOT*.tgz || true
   ./dev/make-distribution.sh --name custom-spark --pip --tgz
   # Install Spark.
   # Extract our built package into our install directory.

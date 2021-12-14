@@ -36,7 +36,7 @@ ENV LC_ALL en_US.UTF-8
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
  && apt-get install -y wget curl unzip nano vim htop iproute2 iputils-ping \
-    python3 python3-setuptools \
+   python3 python3-setuptools python3.8-venv\
  && ln -s /usr/bin/python3 /usr/bin/python \
  && apt install -y python3-pip \
  && python3 -mpip install py4j pyarrow pandas \

@@ -28,6 +28,22 @@ if [[ "$1" == "-d" ]]; then
   -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
   -u "${USER_ID}" \
   "spark-build-${USER_NAME}" $@
+elif [[ "$1" == "venv" ]]; then
+
+  docker run --rm -it --name pyspark_venv_build \
+    --mount type=bind,source="$(pwd)"/spark,target=/spark \
+    --mount type=bind,source="$(pwd)"/build,target=/build \
+    --mount type=bind,source="$(pwd)"/examples,target=/examples \
+    --mount type=bind,source="$(pwd)"/scripts,target=/scripts \
+    --mount type=bind,source="$(pwd)"/../pyNdp,target=/pyNdp \
+    --entrypoint /bin/bash \
+  -v "${ROOT_DIR}/build/.m2:${DOCKER_HOME_DIR}/.m2" \
+  -v "${ROOT_DIR}/build/.gnupg:${DOCKER_HOME_DIR}/.gnupg" \
+  -v "${ROOT_DIR}/build/.sbt:${DOCKER_HOME_DIR}/.sbt" \
+  -v "${ROOT_DIR}/build/.cache:${DOCKER_HOME_DIR}/.cache" \
+  -v "${ROOT_DIR}/build/.ivy2:${DOCKER_HOME_DIR}/.ivy2" \
+  -u "${USER_ID}" \
+  "spark-build-${USER_NAME}" /scripts/build_pyspark_venv.sh
 else
   echo "Starting build for $@"
   cd docker
