@@ -20,6 +20,7 @@ fi
 
 # Only build spark if it was requested, since it takes so long.
 if [ "$1" == "spark" ]; then
+  pwd
   pushd build
   # Download and Install Spark.
   if [ ! -f $SPARK_PACKAGE ]; then
